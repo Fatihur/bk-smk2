@@ -64,6 +64,7 @@ Route::middleware(['auth', 'role:guru_bk'])->group(function () {
         Route::post('/start', [WhatsappSettingController::class, 'start']);
         Route::post('/stop', [WhatsappSettingController::class, 'stop']);
         Route::post('/destroy', [WhatsappSettingController::class, 'destroy']);
+        Route::get('/logs', [WhatsappSettingController::class, 'logs']);
     });
 });
 

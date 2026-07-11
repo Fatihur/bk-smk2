@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Kstmostofa\LaravelWhatsApp\Facades\WhatsApp;
+use Kstmostofa\LaravelWhatsApp\Models\WaMessage;
 
 class WhatsappSettingController extends Controller
 {
@@ -125,5 +126,40 @@ class WhatsappSettingController extends Controller
                 'message' => 'Gagal menghapus session: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function logs(Request $request)
+    {
+        $perPage = $request->input('per_page', 15);
+        $sessionId = $this->sessionId;
+
+        $messages = WaMessage::where('session_id', $sessionId)
+            ->whereIn('direction', ['outgoing', 'incoming'])
+            ->orderBy('wa_timestamp', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
+
+        $messages->getCollection()->transform(function ($msg) {
+            $contact = $msg->direction === 'outgoing' ? $msg->to_id : $msg->from_id;
+            $body = $msg->body;
+            if ($msg->type !== 'text' && $msg->type !== 'chat') {
+                $body = '[' . strtoupper($msg->type) . '] ' . ($body ?? '');
+            }
+
+            return [
+                'id' => $msg->id,
+                'wa_message_id' => $msg->wa_message_id,
+                'direction' => $msg->direction,
+                'contact' => $contact,
+                'type' => $msg->type,
+                'body' => $body,
+                'status' => $msg->status,
+                'ack' => $msg->ack,
+                'wa_timestamp' => $msg->wa_timestamp ? $msg->wa_timestamp->toIso8601String() : null,
+                'created_at' => $msg->created_at?->toIso8601String(),
+            ];
+        });
+
+        return response()->json($messages);
     }
 }
