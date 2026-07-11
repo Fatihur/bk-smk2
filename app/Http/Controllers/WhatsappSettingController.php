@@ -50,8 +50,8 @@ class WhatsappSettingController extends Controller
                 'id' => $this->sessionId,
                 'status' => $status,
                 'qr' => $qr,
-                'phone_number' => $info['phone_number'] ?? $info['me']['user'] ?? null,
-                'push_name' => $info['push_name'] ?? $info['me']['name'] ?? null,
+                'phone_number' => $info['info']['wid']['user'] ?? $info['info']['me']['user'] ?? null,
+                'push_name' => $info['info']['pushname'] ?? $info['info']['me']['name'] ?? null,
                 'ready_at' => null,
             ];
         } catch (\Exception $e) {
