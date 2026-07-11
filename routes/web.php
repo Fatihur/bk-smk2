@@ -7,6 +7,7 @@ use App\Http\Controllers\OrangTuaController;
 use App\Http\Controllers\PelanggaranController;
 use App\Http\Controllers\PengaturanPoinController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\SuratTeguranController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,6 +17,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'role:guru_bk,kepala_sekolah'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/pelanggaran', [PelanggaranController::class, 'riwayat'])->name('pelanggaran.riwayat');
+    Route::get('/surat-teguran', [SuratTeguranController::class, 'index'])->name('teguran.index');
 });
 
 Route::middleware(['auth', 'role:guru_bk'])->group(function () {
