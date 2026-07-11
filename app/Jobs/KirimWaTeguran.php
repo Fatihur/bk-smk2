@@ -7,10 +7,11 @@ use Illuminate\Foundation\Queue\Queueable;
 use App\Models\Siswa;
 use App\Models\SuratTeguran;
 use Kstmostofa\LaravelWhatsApp\Facades\WhatsApp;
+use Illuminate\Support\Facades\Storage;
 
 class KirimWaTeguran implements ShouldQueue
 {
-    use Dispatchable, Queueable;
+    use Queueable;
 
     public function __construct(
         public int $idSiswa,
@@ -28,8 +29,6 @@ class KirimWaTeguran implements ShouldQueue
             ->latest('id')
             ->first();
 
-        $filePath = storage_path('app/public/teguran/' . $this->filename);
-
         $pesan = "Assalamu'alaikum Wr. Wb.\n\n"
             . "Kepada Yth. Bapak/Ibu {nama}\n"
             . "Orang tua/wali dari {$siswa->nama} - Kelas {$siswa->kelas->nama_kelas}\n\n"
@@ -43,8 +42,11 @@ class KirimWaTeguran implements ShouldQueue
 
         foreach ($siswa->orangTua as $ortu) {
             try {
-                WhatsApp::sendDocument($ortu->nomor_wa, $filePath, "Surat_Teguran_{$this->tingkat}.pdf");
-                WhatsApp::sendMessage($ortu->nomor_wa, str_replace('{nama}', $ortu->nama, $pesan));
+                WhatsApp::web('smkn2_monitoring')->messages()->sendDocument($ortu->nomor_wa, [
+                    'url' => Storage::url('teguran/' . $this->filename),
+                    'filename' => "Surat_Teguran_{$this->tingkat}.pdf"
+                ]);
+                WhatsApp::web('smkn2_monitoring')->messages()->sendText($ortu->nomor_wa, str_replace('{nama}', $ortu->nama, $pesan));
             } catch (\Exception $e) {
                 \Log::error("WA send failed for {$ortu->nomor_wa}: " . $e->getMessage());
             }
