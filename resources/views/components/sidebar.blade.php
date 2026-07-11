@@ -9,8 +9,8 @@
         ['label' => 'Data Kelas', 'icon' => '🏫', 'url' => '/data-kelas'],
         ['label' => 'Jenis Pelanggaran', 'icon' => '⚠️', 'url' => '/jenis-pelanggaran'],
         ['label' => 'Pengaturan Poin', 'icon' => '⚙️', 'url' => '/pengaturan-poin'],
-        ['label' => 'Input Pelanggaran', 'icon' => '📝', 'url' => '/input-pelanggaran'],
-        ['label' => 'Riwayat Pelanggaran', 'icon' => '📋', 'url' => '/riwayat-pelanggaran'],
+        ['label' => 'Input Pelanggaran', 'icon' => '📝', 'url' => '/pelanggaran/input'],
+        ['label' => 'Riwayat Pelanggaran', 'icon' => '📋', 'url' => '/pelanggaran'],
         ['label' => 'Surat Teguran', 'icon' => '📄', 'url' => '/surat-teguran'],
         ['label' => 'Laporan', 'icon' => '📈', 'url' => '/laporan'],
     ];

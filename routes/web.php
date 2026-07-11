@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\JenisPelanggaranController;
 use App\Http\Controllers\KelasController;
-use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\OrangTuaController;
+use App\Http\Controllers\PelanggaranController;
+use App\Http\Controllers\PengaturanPoinController;
+use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -12,6 +15,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'role:guru_bk,kepala_sekolah'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/pelanggaran', [PelanggaranController::class, 'riwayat'])->name('pelanggaran.riwayat');
 });
 
 Route::middleware(['auth', 'role:guru_bk'])->group(function () {
@@ -30,6 +34,17 @@ Route::middleware(['auth', 'role:guru_bk'])->group(function () {
     Route::post('/data-orang-tua', [OrangTuaController::class, 'store']);
     Route::put('/data-orang-tua/{orangTua}', [OrangTuaController::class, 'update']);
     Route::delete('/data-orang-tua/{orangTua}', [OrangTuaController::class, 'destroy']);
+
+    Route::get('/jenis-pelanggaran', [JenisPelanggaranController::class, 'index'])->name('jenis-pelanggaran.index');
+    Route::post('/jenis-pelanggaran', [JenisPelanggaranController::class, 'store']);
+    Route::put('/jenis-pelanggaran/{jenisPelanggaran}', [JenisPelanggaranController::class, 'update']);
+    Route::delete('/jenis-pelanggaran/{jenisPelanggaran}', [JenisPelanggaranController::class, 'destroy']);
+
+    Route::get('/pengaturan-poin', [PengaturanPoinController::class, 'index'])->name('pengaturan-poin.index');
+    Route::put('/pengaturan-poin', [PengaturanPoinController::class, 'update'])->name('pengaturan-poin.update');
+
+    Route::get('/pelanggaran/input', [PelanggaranController::class, 'index'])->name('pelanggaran.input');
+    Route::post('/pelanggaran', [PelanggaranController::class, 'store']);
 });
 
 require __DIR__.'/auth.php';
