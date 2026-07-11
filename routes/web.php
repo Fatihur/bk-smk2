@@ -58,6 +58,13 @@ Route::middleware(['auth', 'role:guru_bk'])->group(function () {
     Route::get('/select2/jenis', [Select2Controller::class, 'jenis'])->name('select2.jenis');
 
     Route::get('/pengaturan-whatsapp', [WhatsappSettingController::class, 'index'])->name('whatsapp.settings');
+
+    Route::prefix('api/whatsapp')->group(function () {
+        Route::get('/status', [WhatsappSettingController::class, 'status']);
+        Route::post('/start', [WhatsappSettingController::class, 'start']);
+        Route::post('/stop', [WhatsappSettingController::class, 'stop']);
+        Route::post('/destroy', [WhatsappSettingController::class, 'destroy']);
+    });
 });
 
 require __DIR__.'/auth.php';

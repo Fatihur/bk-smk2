@@ -36,7 +36,7 @@
             <div class="flex flex-col items-center">
                 <p class="text-sm text-gray-500 mb-4">Scan QR ini dengan WhatsApp Anda</p>
                 <div class="bg-white p-3 rounded-lg border border-gray-200 mb-4">
-                    <img :src="session.qr" alt="QR Code" class="w-64 h-64">
+                    <img :src="session?.qr" alt="QR Code" class="w-64 h-64">
                 </div>
                 <div class="text-xs text-gray-500 text-center space-y-1">
                     <p>1. Buka WhatsApp di HP</p>

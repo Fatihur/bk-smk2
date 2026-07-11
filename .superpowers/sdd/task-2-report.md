@@ -1,39 +1,27 @@
 # Task 2 Report: Create Controller + Routes
 
-## Completed Steps
+## Implemented
 
-### Step 1: Created `WhatsappSettingController`
+- Created `app/Http/Controllers/WhatsappSettingController.php` with 5 methods:
+  - `index()` — returns the view
+  - `status()` — GET API, returns sidecar + session status
+  - `start()` — POST API, starts pairing, returns QR
+  - `stop()` — POST API, stops session
+  - `destroy()` — POST API, destroys auth
+- Added web route `/pengaturan-whatsapp` in `routes/web.php`
+- Added 4 API routes in `routes/api.php`
+- Removed unused `SidecarStatusCommand` import from brief
 
-File: `app/Http/Controllers/WhatsappSettingController.php`
+## Tested
 
-- Removed the unused `SidecarStatusCommand` import from the brief spec
-- Constructor applies `auth` + `role:guru_bk` middleware and reads `config('laravel-whatsapp.sidecar.default_session')`
-- 5 methods:
-  - `index()` — returns the `pengaturan-whatsapp.index` view
-  - `status()` — checks sidecar reachability, returns session state (qr/auth/ready/error)
-  - `start()` — starts the session and returns QR data
-  - `stop()` — stops the session
-  - `destroy()` — destroys the session
+- `php artisan route:list | findstr whatsapp` — all 5 routes registered correctly
 
-### Step 2: Registered web route
+## Files Changed
 
-File: `routes/web.php`
+- Create: `app/Http/Controllers/WhatsappSettingController.php`
+- Modify: `routes/web.php`
+- Modify: `routes/api.php`
 
-- Added `use App\Http\Controllers\WhatsappSettingController;` import
-- Added `Route::get('/pengaturan-whatsapp', ...)` inside the `role:guru_bk` group, before `require __DIR__.'/auth.php'`
+## Commit
 
-### Step 3: Registered API routes
-
-File: `routes/api.php`
-
-- Added `use App\Http\Controllers\WhatsappSettingController;` import
-- Added `Route::middleware(['auth', 'role:guru_bk'])->prefix('whatsapp')` group with 4 routes: status (GET), start/stop/destroy (POST)
-
-### Step 4: Verification
-
-`php artisan route:list --path=pengaturan-whatsapp` — 1 web route registered OK
-`php artisan route:list --path=api/whatsapp` — 4 API routes registered OK
-
-### Step 5: Committed
-
-Commit `57e2131` with message: `feat: add WhatsappSettingController and API routes`
+`b983a89 feat: add WhatsappSettingController and API routes`
