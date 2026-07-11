@@ -3,85 +3,91 @@
 @section('content')
 <div class="max-w-6xl mx-auto">
     <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-[#fafafa]">Data Siswa</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Data Siswa</h1>
         <div class="flex gap-3">
-            <button onclick="openImportModal()" class="px-4 py-2 bg-[#121215] border border-[#1c1c22] text-[#fafafa] rounded-lg text-sm hover:bg-[#1c1c22] transition-colors">Import Excel</button>
-            <button onclick="openModal()" class="px-4 py-2 bg-[#0C5CAB] text-[#fafafa] rounded-lg text-sm hover:bg-[#0a4a8a] transition-colors">+ Tambah Siswa</button>
+            <button onclick="openImportModal()" class="flex items-center gap-1.5 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+                <x-icon name="download" class="w-4 h-4" />
+                Import Excel
+            </button>
+            <button onclick="openModal()" class="flex items-center gap-1.5 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
+                <x-icon name="plus" class="w-4 h-4" />
+                Tambah Siswa
+            </button>
         </div>
     </div>
 
-    <div class="bg-[#121215] border border-[#1c1c22] rounded-xl overflow-hidden">
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         <table class="w-full text-sm">
             <thead>
-                <tr class="text-[#71717a] border-b border-[#1c1c22]">
-                    <th class="text-left py-3 px-4">NISN</th>
-                    <th class="text-left py-3 px-4">Nama</th>
-                    <th class="text-left py-3 px-4">Kelas</th>
-                    <th class="text-right py-3 px-4">Aksi</th>
+                <tr class="text-gray-500 text-xs uppercase tracking-wider bg-gray-50">
+                    <th class="text-left px-5 py-3 font-medium">NISN</th>
+                    <th class="text-left px-5 py-3 font-medium">Nama</th>
+                    <th class="text-left px-5 py-3 font-medium">Kelas</th>
+                    <th class="text-right px-5 py-3 font-medium">Aksi</th>
                 </tr>
             </thead>
             <tbody id="siswa-table-body">
                 @forelse ($siswa as $s)
-                <tr class="border-b border-[#1c1c22] hover:bg-[#1c1c22]/50" data-id="{{ $s->id }}">
-                    <td class="py-3 px-4 text-[#fafafa]">{{ $s->nisn }}</td>
-                    <td class="py-3 px-4 text-[#fafafa]">{{ $s->nama }}</td>
-                    <td class="py-3 px-4 text-[#a1a1aa]">{{ $s->kelas->nama_kelas ?? '-' }}</td>
-                    <td class="py-3 px-4 text-right">
-                        <button onclick="editSiswa({{ $s->id }}, '{{ $s->nisn }}', '{{ $s->nama }}', {{ $s->id_kelas }})" class="text-[#0C5CAB] hover:underline mr-3">Edit</button>
-                        <button onclick="hapusSiswa({{ $s->id }})" class="text-red-400 hover:underline">Hapus</button>
+                <tr class="border-t border-gray-100 hover:bg-gray-50" data-id="{{ $s->id }}">
+                    <td class="px-5 py-3.5 text-gray-900">{{ $s->nisn }}</td>
+                    <td class="px-5 py-3.5 text-gray-900">{{ $s->nama }}</td>
+                    <td class="px-5 py-3.5 text-gray-500">{{ $s->kelas->nama_kelas ?? '-' }}</td>
+                    <td class="px-5 py-3.5 text-right">
+                        <button onclick="editSiswa({{ $s->id }}, '{{ $s->nisn }}', '{{ $s->nama }}', {{ $s->id_kelas }})" class="text-purple-600 hover:text-purple-700 font-medium mr-4 text-sm">Edit</button>
+                        <button onclick="hapusSiswa({{ $s->id }})" class="text-red-600 hover:text-red-700 text-sm font-medium">Hapus</button>
                     </td>
                 </tr>
-            @empty
+                @empty
                 <tr>
-                    <td colspan="4" class="text-center py-8 text-[#71717a]">Belum ada data siswa</td>
+                    <td colspan="4" class="text-center py-8 text-gray-500">Belum ada data siswa</td>
                 </tr>
-            @endforelse
+                @endforelse
             </tbody>
         </table>
     </div>
 </div>
 
-<div id="siswaModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center">
-    <div class="bg-[#121215] border border-[#1c1c22] rounded-xl p-6 w-full max-w-md mx-4">
-        <h2 id="modalTitle" class="text-lg font-semibold text-[#fafafa] mb-4">Tambah Siswa</h2>
+<div id="siswaModal" class="fixed inset-0 z-50 hidden bg-gray-900/50 backdrop-blur-sm flex items-center justify-center">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 w-full max-w-md mx-4 shadow-xl">
+        <h2 id="modalTitle" class="text-lg font-semibold text-gray-900 mb-4">Tambah Siswa</h2>
         <form id="siswaForm">
             <input type="hidden" id="siswaId">
             <div class="mb-4">
-                <label class="block text-sm text-[#a1a1aa] mb-1">NISN</label>
-                <input type="text" id="nisn" class="w-full bg-[#09090b] border border-[#1c1c22] rounded-lg px-3 py-2 text-[#fafafa] text-sm focus:outline-none focus:border-[#0C5CAB]" required>
+                <label class="block text-sm font-medium text-gray-700 mb-1">NISN</label>
+                <input type="text" id="nisn" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none" required>
             </div>
             <div class="mb-4">
-                <label class="block text-sm text-[#a1a1aa] mb-1">Nama</label>
-                <input type="text" id="nama" class="w-full bg-[#09090b] border border-[#1c1c22] rounded-lg px-3 py-2 text-[#fafafa] text-sm focus:outline-none focus:border-[#0C5CAB]" required maxlength="100">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                <input type="text" id="nama" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none" required maxlength="100">
             </div>
             <div class="mb-4">
-                <label class="block text-sm text-[#a1a1aa] mb-1">Kelas</label>
-                <select id="id_kelas" class="w-full bg-[#09090b] border border-[#1c1c22] rounded-lg px-3 py-2 text-[#fafafa] text-sm focus:outline-none focus:border-[#0C5CAB]" required>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
+                <select id="id_kelas" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none" required>
                     <option value="">Pilih Kelas</option>
                     @foreach ($kelas as $k)
                     <option value="{{ $k->id }}">{{ $k->nama_kelas }}</option>
                     @endforeach
                 </select>
             </div>
-            <div class="flex justify-end gap-3">
-                <button type="button" onclick="closeModal()" class="px-4 py-2 text-sm text-[#a1a1aa] hover:text-[#fafafa] transition-colors">Batal</button>
-                <button type="submit" class="px-4 py-2 bg-[#0C5CAB] text-[#fafafa] rounded-lg text-sm hover:bg-[#0a4a8a] transition-colors">Simpan</button>
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" onclick="closeModal()" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 font-medium">Batal</button>
+                <button type="submit" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors">Simpan</button>
             </div>
         </form>
     </div>
 </div>
 
-<div id="importModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center">
-    <div class="bg-[#121215] border border-[#1c1c22] rounded-xl p-6 w-full max-w-md mx-4">
-        <h2 class="text-lg font-semibold text-[#fafafa] mb-4">Import Siswa dari Excel</h2>
+<div id="importModal" class="fixed inset-0 z-50 hidden bg-gray-900/50 backdrop-blur-sm flex items-center justify-center">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 w-full max-w-md mx-4 shadow-xl">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Import Siswa dari Excel</h2>
         <form id="importForm" enctype="multipart/form-data">
             <div class="mb-4">
-                <label class="block text-sm text-[#a1a1aa] mb-1">File Excel (.xlsx / .csv)</label>
-                <input type="file" id="importFile" accept=".xlsx,.csv" class="w-full text-sm text-[#a1a1aa] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-[#0C5CAB] file:text-[#fafafa] hover:file:bg-[#0a4a8a]" required>
+                <label class="block text-sm font-medium text-gray-700 mb-1">File Excel (.xlsx / .csv)</label>
+                <input type="file" id="importFile" accept=".xlsx,.csv" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-600 file:text-white hover:file:bg-purple-700 file:transition-colors" required>
             </div>
-            <div class="flex justify-end gap-3">
-                <button type="button" onclick="closeImportModal()" class="px-4 py-2 text-sm text-[#a1a1aa] hover:text-[#fafafa] transition-colors">Batal</button>
-                <button type="submit" class="px-4 py-2 bg-[#0C5CAB] text-[#fafafa] rounded-lg text-sm hover:bg-[#0a4a8a] transition-colors">Import</button>
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" onclick="closeImportModal()" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 font-medium">Batal</button>
+                <button type="submit" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors">Import</button>
             </div>
         </form>
     </div>

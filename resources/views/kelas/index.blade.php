@@ -3,60 +3,63 @@
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-[#fafafa]">Data Kelas</h1>
-        <button onclick="openModal()" class="px-4 py-2 bg-[#0C5CAB] text-[#fafafa] rounded-lg text-sm hover:bg-[#0a4a8a] transition-colors">+ Tambah Kelas</button>
+        <h1 class="text-2xl font-bold text-gray-900">Data Kelas</h1>
+        <button onclick="openModal()" class="flex items-center gap-1.5 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
+            <x-icon name="plus" class="w-4 h-4" />
+            Tambah Kelas
+        </button>
     </div>
 
-    <div class="bg-[#121215] border border-[#1c1c22] rounded-xl overflow-hidden">
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         <table class="w-full text-sm">
             <thead>
-                <tr class="text-[#71717a] border-b border-[#1c1c22]">
-                    <th class="text-left py-3 px-4">Nama Kelas</th>
-                    <th class="text-left py-3 px-4">Tingkat</th>
-                    <th class="text-right py-3 px-4">Aksi</th>
+                <tr class="text-gray-500 text-xs uppercase tracking-wider bg-gray-50">
+                    <th class="text-left px-5 py-3 font-medium">Nama Kelas</th>
+                    <th class="text-left px-5 py-3 font-medium">Tingkat</th>
+                    <th class="text-right px-5 py-3 font-medium">Aksi</th>
                 </tr>
             </thead>
             <tbody id="kelas-table-body">
                 @forelse ($kelas as $k)
-                <tr class="border-b border-[#1c1c22] hover:bg-[#1c1c22]/50" data-id="{{ $k->id }}">
-                    <td class="py-3 px-4 text-[#fafafa]">{{ $k->nama_kelas }}</td>
-                    <td class="py-3 px-4 text-[#a1a1aa]">{{ $k->tingkat }}</td>
-                    <td class="py-3 px-4 text-right">
-                        <button onclick="editKelas({{ $k->id }}, '{{ $k->nama_kelas }}', '{{ $k->tingkat }}')" class="text-[#0C5CAB] hover:underline mr-3">Edit</button>
-                        <button onclick="hapusKelas({{ $k->id }})" class="text-red-400 hover:underline">Hapus</button>
+                <tr class="border-t border-gray-100 hover:bg-gray-50" data-id="{{ $k->id }}">
+                    <td class="px-5 py-3.5 text-gray-900">{{ $k->nama_kelas }}</td>
+                    <td class="px-5 py-3.5 text-gray-500">{{ $k->tingkat }}</td>
+                    <td class="px-5 py-3.5 text-right">
+                        <button onclick="editKelas({{ $k->id }}, '{{ $k->nama_kelas }}', '{{ $k->tingkat }}')" class="text-purple-600 hover:text-purple-700 font-medium mr-4 text-sm">Edit</button>
+                        <button onclick="hapusKelas({{ $k->id }})" class="text-red-600 hover:text-red-700 text-sm font-medium">Hapus</button>
                     </td>
                 </tr>
-            @empty
+                @empty
                 <tr>
-                    <td colspan="3" class="text-center py-8 text-[#71717a]">Belum ada data kelas</td>
+                    <td colspan="3" class="text-center py-8 text-gray-500">Belum ada data kelas</td>
                 </tr>
-            @endforelse
+                @endforelse
             </tbody>
         </table>
     </div>
 </div>
 
-<div id="kelasModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center">
-    <div class="bg-[#121215] border border-[#1c1c22] rounded-xl p-6 w-full max-w-md mx-4">
-        <h2 id="modalTitle" class="text-lg font-semibold text-[#fafafa] mb-4">Tambah Kelas</h2>
+<div id="kelasModal" class="fixed inset-0 z-50 hidden bg-gray-900/50 backdrop-blur-sm flex items-center justify-center">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 w-full max-w-md mx-4 shadow-xl">
+        <h2 id="modalTitle" class="text-lg font-semibold text-gray-900 mb-4">Tambah Kelas</h2>
         <form id="kelasForm">
             <input type="hidden" id="kelasId">
             <div class="mb-4">
-                <label class="block text-sm text-[#a1a1aa] mb-1">Nama Kelas</label>
-                <input type="text" id="nama_kelas" class="w-full bg-[#09090b] border border-[#1c1c22] rounded-lg px-3 py-2 text-[#fafafa] text-sm focus:outline-none focus:border-[#0C5CAB]" required maxlength="50">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kelas</label>
+                <input type="text" id="nama_kelas" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none" required maxlength="50">
             </div>
             <div class="mb-4">
-                <label class="block text-sm text-[#a1a1aa] mb-1">Tingkat</label>
-                <select id="tingkat" class="w-full bg-[#09090b] border border-[#1c1c22] rounded-lg px-3 py-2 text-[#fafafa] text-sm focus:outline-none focus:border-[#0C5CAB]" required>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tingkat</label>
+                <select id="tingkat" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none" required>
                     <option value="">Pilih Tingkat</option>
                     <option value="X">X</option>
                     <option value="XI">XI</option>
                     <option value="XII">XII</option>
                 </select>
             </div>
-            <div class="flex justify-end gap-3">
-                <button type="button" onclick="closeModal()" class="px-4 py-2 text-sm text-[#a1a1aa] hover:text-[#fafafa] transition-colors">Batal</button>
-                <button type="submit" class="px-4 py-2 bg-[#0C5CAB] text-[#fafafa] rounded-lg text-sm hover:bg-[#0a4a8a] transition-colors">Simpan</button>
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" onclick="closeModal()" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 font-medium">Batal</button>
+                <button type="submit" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors">Simpan</button>
             </div>
         </form>
     </div>

@@ -12,25 +12,21 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['"IBM Plex Sans"', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
             },
             colors: {
                 primary: {
-                    50: '#e8f0fa',
-                    100: '#c5daf2',
-                    200: '#9ebee8',
-                    300: '#72a2dd',
-                    400: '#4f8bd5',
-                    500: '#0C5CAB',
-                    600: '#0a4f93',
-                    700: '#08427b',
-                    800: '#063563',
-                    900: '#04284b',
-                },
-                surface: {
-                    DEFAULT: '#09090b',
-                    card: '#121215',
-                    border: '#1c1c22',
+                    50: '#faf5ff',
+                    100: '#f3e8ff',
+                    200: '#e9d5ff',
+                    300: '#d8b4fe',
+                    400: '#c084fc',
+                    500: '#a855f7',
+                    600: '#9333ea',
+                    700: '#7e22ce',
+                    800: '#6b21a8',
+                    900: '#581c87',
                 },
             },
             borderRadius: {
