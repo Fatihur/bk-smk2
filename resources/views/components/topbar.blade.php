@@ -25,9 +25,14 @@
                 ['label' => 'Laporan', 'icon' => 'download', 'url' => '/laporan'],
             ],
         ],
+        'WhatsApp' => [
+            'children' => [
+                ['label' => 'Pengaturan WhatsApp', 'icon' => 'bell', 'url' => '/pengaturan-whatsapp'],
+            ],
+        ],
     ];
 
-    $kepsekOnly = ['/data-kelas', '/data-siswa', '/data-orang-tua', '/jenis-pelanggaran', '/pengaturan-poin', '/pelanggaran/input', '/surat-teguran'];
+    $kepsekOnly = ['/data-kelas', '/data-siswa', '/data-orang-tua', '/jenis-pelanggaran', '/pengaturan-poin', '/pelanggaran/input', '/surat-teguran', '/pengaturan-whatsapp'];
     if ($role === 'kepala_sekolah') {
         foreach ($groups as $key => $g) {
             if ($key === 'dashboard') continue;
