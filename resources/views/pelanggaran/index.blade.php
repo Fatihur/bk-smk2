@@ -72,5 +72,4 @@
         {{ $pelanggaran->links() }}
     </div>
 </div>
-@endpush
 @endsection

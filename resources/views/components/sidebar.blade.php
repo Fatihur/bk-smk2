@@ -17,7 +17,7 @@
 
     $kepsekMenu = [
         ['label' => 'Dashboard', 'icon' => '📊', 'url' => '/dashboard'],
-        ['label' => 'Riwayat Pelanggaran', 'icon' => '📋', 'url' => '/riwayat-pelanggaran'],
+        ['label' => 'Riwayat Pelanggaran', 'icon' => '📋', 'url' => '/pelanggaran'],
         ['label' => 'Laporan', 'icon' => '📈', 'url' => '/laporan'],
     ];
 
