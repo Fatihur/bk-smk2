@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisPelanggaranController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\OrangTuaController;
 use App\Http\Controllers\PelanggaranController;
 use App\Http\Controllers\PengaturanPoinController;
@@ -18,6 +19,9 @@ Route::middleware(['auth', 'role:guru_bk,kepala_sekolah'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/pelanggaran', [PelanggaranController::class, 'riwayat'])->name('pelanggaran.riwayat');
     Route::get('/surat-teguran', [SuratTeguranController::class, 'index'])->name('teguran.index');
+
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
 });
 
 Route::middleware(['auth', 'role:guru_bk'])->group(function () {
