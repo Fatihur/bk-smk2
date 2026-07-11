@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<x-app-layout>
 <div class="max-w-6xl mx-auto">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Data Siswa</h1>
@@ -184,4 +182,4 @@ function hapusSiswa(id) {
 }
 </script>
 @endpush
-@endsection
+</x-app-layout>

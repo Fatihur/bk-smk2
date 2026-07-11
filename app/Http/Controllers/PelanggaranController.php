@@ -12,17 +12,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PelanggaranController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:guru_bk'])->except(['riwayat']);
-        $this->middleware(['auth', 'role:guru_bk,kepala_sekolah'])->only(['riwayat']);
-    }
-
     public function index()
     {
-        $siswa = Siswa::with('kelas')->orderBy('nama')->get();
-        $jenis = JenisPelanggaran::orderBy('nama')->get();
-        return view('pelanggaran.create', compact('siswa', 'jenis'));
+        return view('pelanggaran.create');
     }
 
     public function store(Request $request)

@@ -7,11 +7,6 @@ use Illuminate\Http\Request;
 
 class KelasController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:guru_bk']);
-    }
-
     public function index()
     {
         $kelas = Kelas::orderBy('tingkat')->orderBy('nama_kelas')->get();

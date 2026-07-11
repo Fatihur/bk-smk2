@@ -1,4 +1,4 @@
 STATUS: DONE
 COMMITS: bf7e8d9
-TESTS: php artisan migrate:fresh --seed (pass), php artisan route:list (42 routes, all new routes present)
-CONCERNS: None
+TESTS: Created 3 controllers, 3 views, PDF template, installed DomPDF, routes registered
+CONCERNS: Seeded pengaturan_poin changed from original (50/100/150) to 25/50/75. Verify if this is intentional.

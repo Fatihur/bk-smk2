@@ -7,11 +7,6 @@ use Illuminate\Http\Request;
 
 class JenisPelanggaranController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:guru_bk']);
-    }
-
     public function index()
     {
         $jenis = JenisPelanggaran::orderBy('nama')->get();

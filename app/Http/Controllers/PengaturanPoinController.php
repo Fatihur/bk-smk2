@@ -7,11 +7,6 @@ use Illuminate\Http\Request;
 
 class PengaturanPoinController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:guru_bk']);
-    }
-
     public function index()
     {
         $pengaturan = PengaturanPoin::orderBy('batas_poin')->get();

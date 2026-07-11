@@ -8,11 +8,6 @@ use Illuminate\Http\Request;
 
 class OrangTuaController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:guru_bk']);
-    }
-
     public function index()
     {
         $siswa = Siswa::with('kelas', 'orangTua')->get();
