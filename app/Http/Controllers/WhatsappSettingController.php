@@ -11,7 +11,6 @@ class WhatsappSettingController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth', 'role:guru_bk']);
         $this->sessionId = config('laravel-whatsapp.sidecar.default_session', 'smkn2_monitoring');
     }
 
