@@ -11,7 +11,7 @@ class WhatsappSettingController extends Controller
 
     public function __construct()
     {
-        $this->sessionId = config('laravel-whatsapp.sidecar.default_session', 'smkn2_monitoring');
+        $this->sessionId = config('laravel-whatsapp.ui.default_session', 'smkn2_monitoring');
     }
 
     public function index()
@@ -23,49 +23,40 @@ class WhatsappSettingController extends Controller
     {
         $sidecarRunning = false;
         $sidecarInstalled = false;
+        $session = null;
+
         try {
-            // ponytail: simple HTTP check to see if sidecar is reachable
-            $web = WhatsApp::web($this->sessionId);
-            $state = $web->state();
+            $client = WhatsApp::webClient();
+            $client->ping();
             $sidecarRunning = true;
             $sidecarInstalled = true;
-        } catch (\Exception $e) {
-            // sidecar not reachable or not installed
-        }
 
-        $session = null;
-        if ($sidecarRunning) {
-            try {
-                $web = WhatsApp::web($this->sessionId);
-                $state = $web->state();
-                $info = null;
-                $qr = null;
-                if ($state === 'qr') {
-                    $qrData = $web->qr();
-                    $qr = $qrData['qr'] ?? null;
-                }
-                if (in_array($state, ['authenticated', 'ready'])) {
-                    $info = $web->info();
-                }
+            $web = WhatsApp::web($this->sessionId);
+            $state = $web->state();
+            $status = $state['status'] ?? 'unknown';
 
-                $session = [
-                    'id' => $this->sessionId,
-                    'status' => $state,
-                    'qr' => $qr,
-                    'phone_number' => $info['phone_number'] ?? $info['me']['user'] ?? null,
-                    'push_name' => $info['push_name'] ?? $info['me']['name'] ?? null,
-                    'ready_at' => null,
-                ];
-            } catch (\Exception $e) {
-                $session = [
-                    'id' => $this->sessionId,
-                    'status' => 'error',
-                    'qr' => null,
-                    'phone_number' => null,
-                    'push_name' => null,
-                    'ready_at' => null,
-                ];
+            $qr = null;
+            if ($status === 'qr') {
+                $qrData = $web->qr();
+                $qr = $qrData['qr'] ?? null;
             }
+
+            $info = null;
+            if (in_array($status, ['authenticated', 'ready'])) {
+                $info = $web->info();
+            }
+
+            $session = [
+                'id' => $this->sessionId,
+                'status' => $status,
+                'qr' => $qr,
+                'phone_number' => $info['phone_number'] ?? $info['me']['user'] ?? null,
+                'push_name' => $info['push_name'] ?? $info['me']['name'] ?? null,
+                'ready_at' => null,
+            ];
+        } catch (\Exception $e) {
+            // ponytail: log the error for debugging but don't expose to UI
+            logger()->error('WhatsApp status check failed: ' . $e->getMessage());
         }
 
         return response()->json([
@@ -83,10 +74,10 @@ class WhatsappSettingController extends Controller
             $web = WhatsApp::web($this->sessionId);
             $result = $web->start();
 
-            // after start, get QR
             $state = $web->state();
+            $status = $state['status'] ?? 'unknown';
             $qr = null;
-            if ($state === 'qr') {
+            if ($status === 'qr') {
                 $qrData = $web->qr();
                 $qr = $qrData['qr'] ?? null;
             }
@@ -95,7 +86,7 @@ class WhatsappSettingController extends Controller
                 'success' => true,
                 'session' => [
                     'id' => $this->sessionId,
-                    'status' => $state,
+                    'status' => $status,
                     'qr' => $qr,
                     'phone_number' => null,
                     'push_name' => null,
