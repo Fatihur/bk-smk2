@@ -19,6 +19,7 @@
                 <x-sidebar />
                 <main class="flex-1 p-6 lg:p-8 overflow-auto">
                     {{ $slot }}
+                    @yield('content')
                 </main>
             </div>
         @endauth
