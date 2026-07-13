@@ -120,6 +120,8 @@ class SiswaController extends Controller
                 $ayah = trim($sheet->getCell('J' . $r)->getValue() ?? '');
                 $ibu = trim($sheet->getCell('K' . $r)->getValue() ?? '');
             } else {
+                // ponytail: column positions hardcoded for specific Dapodik export format.
+                // If import starts failing, re-map by inspecting the source Excel headers.
                 $rombel = trim($sheet->getCell('AQ' . $r)->getValue() ?? '');
                 $nisn = trim($sheet->getCell('E' . $r)->getValue() ?? '');
                 $namaSiswa = trim($sheet->getCell('B' . $r)->getValue() ?? '');
@@ -144,7 +146,20 @@ class SiswaController extends Controller
                 continue;
             }
 
-            if (!$tglLahir || $tglLahir === '0000-00-00' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tglLahir)) {
+            if ($tglLahir) {
+                if (is_numeric($tglLahir)) {
+                    $dt = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($tglLahir);
+                    $tglLahir = $dt->format('Y-m-d');
+                } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $tglLahir)) {
+                    // already YYYY-MM-DD
+                } else {
+                    try {
+                        $tglLahir = \Carbon\Carbon::parse($tglLahir)->format('Y-m-d');
+                    } catch (\Exception $e) {
+                        $tglLahir = null;
+                    }
+                }
+            } else {
                 $tglLahir = null;
             }
 
