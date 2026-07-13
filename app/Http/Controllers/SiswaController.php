@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class SiswaController extends Controller
 {
@@ -71,6 +74,20 @@ class SiswaController extends Controller
         return response()->json(['message' => 'Siswa berhasil dihapus']);
     }
 
+    public function template()
+    {
+        $spreadsheet = IOFactory::load(__DIR__ . '/../../../resources/templates/import_siswa.xlsx');
+        $writer = new XlsxWriter($spreadsheet);
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        return response($content, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="template_import_siswa.xlsx"',
+        ]);
+    }
+
     public function import(Request $request)
     {
         $request->validate([
@@ -83,22 +100,50 @@ class SiswaController extends Controller
         $imported = 0;
         $skipped = 0;
 
-        for ($r = 7; $r <= $highestRow; $r++) {
-            $rombel = trim($sheet->getCell('AQ' . $r)->getValue() ?? '');
+        // detect format: if A1 = "NISN", it's a template format
+        $isTemplate = strtoupper(trim($sheet->getCell('A1')->getValue() ?? '')) === 'NISN';
+
+        $startRow = $isTemplate ? 2 : 7;
+
+        for ($r = $startRow; $r <= $highestRow; $r++) {
+            if ($isTemplate) {
+                $nisn = trim($sheet->getCell('A' . $r)->getValue() ?? '');
+                $namaSiswa = trim($sheet->getCell('B' . $r)->getValue() ?? '');
+                $rombel = trim($sheet->getCell('L' . $r)->getValue() ?? '');
+                $jk = trim($sheet->getCell('C' . $r)->getValue() ?? '');
+                $tempatLahir = trim($sheet->getCell('D' . $r)->getValue() ?? '');
+                $tglLahir = trim($sheet->getCell('E' . $r)->getValue() ?? '');
+                $nik = trim($sheet->getCell('F' . $r)->getValue() ?? '');
+                $agama = trim($sheet->getCell('G' . $r)->getValue() ?? '');
+                $alamat = trim($sheet->getCell('H' . $r)->getValue() ?? '');
+                $hp = trim($sheet->getCell('I' . $r)->getValue() ?? '');
+                $ayah = trim($sheet->getCell('J' . $r)->getValue() ?? '');
+                $ibu = trim($sheet->getCell('K' . $r)->getValue() ?? '');
+            } else {
+                $rombel = trim($sheet->getCell('AQ' . $r)->getValue() ?? '');
+                $nisn = trim($sheet->getCell('E' . $r)->getValue() ?? '');
+                $namaSiswa = trim($sheet->getCell('B' . $r)->getValue() ?? '');
+                $jk = trim($sheet->getCell('D' . $r)->getValue() ?? '');
+                $tempatLahir = trim($sheet->getCell('F' . $r)->getValue() ?? '');
+                $tglLahir = trim($sheet->getCell('G' . $r)->getValue() ?? '');
+                $nik = trim($sheet->getCell('H' . $r)->getValue() ?? '');
+                $agama = trim($sheet->getCell('I' . $r)->getValue() ?? '');
+                $alamat = trim($sheet->getCell('J' . $r)->getValue() ?? '');
+                $hp = trim($sheet->getCell('T' . $r)->getValue() ?? '');
+                $ayah = trim($sheet->getCell('Y' . $r)->getValue() ?? '');
+                $ibu = trim($sheet->getCell('AE' . $r)->getValue() ?? '');
+            }
+
             if (!in_array($rombel, ['X KJJ', 'XI KJJ', 'XII KJJ'])) {
                 $skipped++;
                 continue;
             }
-
-            $nisn = trim($sheet->getCell('E' . $r)->getValue() ?? '');
-            $namaSiswa = trim($sheet->getCell('B' . $r)->getValue() ?? '');
 
             if (!$nisn || !$namaSiswa) {
                 $skipped++;
                 continue;
             }
 
-            $tglLahir = trim($sheet->getCell('G' . $r)->getValue() ?? '');
             if (!$tglLahir || $tglLahir === '0000-00-00') {
                 $tglLahir = null;
             }
@@ -107,15 +152,15 @@ class SiswaController extends Controller
                 ['nisn' => $nisn],
                 [
                     'nama_siswa' => $namaSiswa,
-                    'jk' => trim($sheet->getCell('D' . $r)->getValue() ?? ''),
-                    'tempat_lahir' => trim($sheet->getCell('F' . $r)->getValue() ?? ''),
+                    'jk' => $jk,
+                    'tempat_lahir' => $tempatLahir,
                     'tgl_lahir' => $tglLahir,
-                    'nik' => trim($sheet->getCell('H' . $r)->getValue() ?? ''),
-                    'agama' => trim($sheet->getCell('I' . $r)->getValue() ?? ''),
-                    'alamat' => trim($sheet->getCell('J' . $r)->getValue() ?? ''),
-                    'hp' => trim($sheet->getCell('T' . $r)->getValue() ?? ''),
-                    'ayah' => trim($sheet->getCell('Y' . $r)->getValue() ?? ''),
-                    'ibu' => trim($sheet->getCell('AE' . $r)->getValue() ?? ''),
+                    'nik' => $nik,
+                    'agama' => $agama,
+                    'alamat' => $alamat,
+                    'hp' => $hp,
+                    'ayah' => $ayah,
+                    'ibu' => $ibu,
                     'rombel' => $rombel,
                 ]
             );

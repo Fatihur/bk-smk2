@@ -27,6 +27,7 @@ Route::middleware(['auth', 'role:guru_bk,kepala_sekolah'])->group(function () {
 Route::middleware(['auth', 'role:guru_bk'])->group(function () {
     Route::get('/data-siswa', [SiswaController::class, 'index']);
     Route::post('/data-siswa', [SiswaController::class, 'store']);
+    Route::get('/data-siswa/template', [SiswaController::class, 'template']);
     Route::post('/data-siswa/import', [SiswaController::class, 'import']);
     Route::get('/data-siswa/{siswa}/edit', [SiswaController::class, 'edit']);
     Route::put('/data-siswa/{siswa}', [SiswaController::class, 'update']);
