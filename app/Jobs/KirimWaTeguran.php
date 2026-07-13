@@ -7,7 +7,6 @@ use Illuminate\Foundation\Queue\Queueable;
 use App\Models\Siswa;
 use App\Models\SuratTeguran;
 use Kstmostofa\LaravelWhatsApp\Facades\WhatsApp;
-use Illuminate\Support\Facades\Storage;
 
 class KirimWaTeguran implements ShouldQueue
 {
@@ -21,17 +20,25 @@ class KirimWaTeguran implements ShouldQueue
 
     public function handle(): void
     {
-        $siswa = Siswa::with(['kelas', 'orangTua'])->find($this->idSiswa);
+        $siswa = Siswa::find($this->idSiswa);
         if (!$siswa) return;
+        if (!$siswa->no_wali) {
+            \Log::error("WA send skipped: Siswa {$this->idSiswa} has no no_wali set");
+            return;
+        }
 
         $surat = SuratTeguran::where('id_siswa', $this->idSiswa)
             ->where('tingkat', $this->tingkat)
             ->latest('id')
             ->first();
 
+        if (!$surat) return;
+
+        $namaWali = $siswa->ayah ?: $siswa->ibu ?: 'Bapak/Ibu Wali';
+
         $pesan = "Assalamu'alaikum Wr. Wb.\n\n"
-            . "Kepada Yth. Bapak/Ibu {nama}\n"
-            . "Orang tua/wali dari {$siswa->nama} - Kelas {$siswa->kelas->nama_kelas}\n\n"
+            . "Kepada Yth. {$namaWali}\n"
+            . "Orang tua/wali dari {$siswa->nama_siswa} - {$siswa->rombel}\n\n"
             . "Dengan ini kami sampaikan bahwa putra/putri Bapak/Ibu telah mencapai "
             . "akumulasi poin pelanggaran sebesar {$surat->total_poin} poin "
             . "dan diterbitkan Surat Teguran " . strtoupper($this->tingkat) . ".\n\n"
@@ -40,20 +47,16 @@ class KirimWaTeguran implements ShouldQueue
             . "Wassalamu'alaikum Wr. Wb.\n"
             . "SMK Negeri 2 Sumbawa Besar";
 
-        foreach ($siswa->orangTua as $ortu) {
-            try {
-                WhatsApp::web('smkn2_monitoring')->messages()->sendDocument($ortu->nomor_wa, [
-                    'url' => Storage::url('teguran/' . $this->filename),
-                    'filename' => "Surat_Teguran_{$this->tingkat}.pdf"
-                ]);
-                WhatsApp::web('smkn2_monitoring')->messages()->sendText($ortu->nomor_wa, str_replace('{nama}', $ortu->nama, $pesan));
-            } catch (\Exception $e) {
-                \Log::error("WA send failed for {$ortu->nomor_wa}: " . $e->getMessage());
-            }
-        }
+        try {
+            WhatsApp::web('smkn2_monitoring')->messages()->sendDocument($siswa->no_wali, [
+                'url' => config('app.url') . '/storage/teguran/' . $this->filename,
+                'filename' => "Surat_Teguran_{$this->tingkat}.pdf"
+            ]);
+            WhatsApp::web('smkn2_monitoring')->messages()->sendText($siswa->no_wali, $pesan);
 
-        if ($surat) {
             $surat->update(['status_terkirim' => true]);
+        } catch (\Exception $e) {
+            \Log::error("WA send failed for {$siswa->no_wali}: " . $e->getMessage());
         }
     }
 }
