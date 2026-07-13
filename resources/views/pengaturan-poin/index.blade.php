@@ -4,12 +4,6 @@
         <h1 class="text-2xl font-bold text-gray-900">Pengaturan Poin</h1>
     </div>
 
-    @if (session('success'))
-    <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
-        {{ session('success') }}
-    </div>
-    @endif
-
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
         <form method="POST" action="{{ route('pengaturan-poin.update') }}">
             @csrf

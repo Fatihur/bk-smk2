@@ -246,25 +246,36 @@
                         .then(d => {
                             if (d.success) {
                                 this.session = d.session;
+                                toast('Pairing dimulai, scan QR', 'info');
                                 this.pollingTimer = setTimeout(() => this.fetchStatus(), 2000);
+                            } else {
+                                toast(d.message || 'Gagal memulai pairing', 'error');
                             }
                             this.loading = false;
                         })
-                        .catch(() => { this.loading = false; });
+                        .catch(() => { toast('Gagal memulai pairing', 'error'); this.loading = false; });
                 },
 
                 stopSession() {
                     if (!confirm('Hentikan session? Autentikasi tetap tersimpan.')) return;
                     fetch('/api/whatsapp/stop', { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content } })
                         .then(r => r.json())
-                        .then(() => this.fetchStatus());
+                        .then(d => {
+                            toast(d?.message || 'Session dihentikan', 'success');
+                            this.fetchStatus();
+                        })
+                        .catch(() => toast('Gagal menghentikan session', 'error'));
                 },
 
                 destroySession() {
                     if (!confirm('Hapus session? Anda harus pairing ulang nantinya.')) return;
                     fetch('/api/whatsapp/destroy', { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content } })
                         .then(r => r.json())
-                        .then(() => this.fetchStatus());
+                        .then(d => {
+                            toast(d?.message || 'Session dihapus', 'success');
+                            this.fetchStatus();
+                        })
+                        .catch(() => toast('Gagal menghapus session', 'error'));
                 },
 
                 fetchLogs() {

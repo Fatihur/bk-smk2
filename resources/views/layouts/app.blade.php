@@ -28,6 +28,18 @@
                 {{ $slot }}
             </div>
         @endguest
+        <x-toast />
+        @if (session('success'))
+            <script>document.addEventListener('DOMContentLoaded', () => toast({{ json_encode(session('success')) }}, 'success'));</script>
+        @elseif (session('error'))
+            <script>document.addEventListener('DOMContentLoaded', () => toast({{ json_encode(session('error')) }}, 'error'));</script>
+        @elseif (session('warning'))
+            <script>document.addEventListener('DOMContentLoaded', () => toast({{ json_encode(session('warning')) }}, 'warning'));</script>
+        @elseif (session('status') === 'profile-updated')
+            <script>document.addEventListener('DOMContentLoaded', () => toast('Profil berhasil diperbarui', 'success'));</script>
+        @elseif (session('status') === 'password-updated')
+            <script>document.addEventListener('DOMContentLoaded', () => toast('Kata sandi berhasil diperbarui', 'success'));</script>
+        @endif
         @stack('scripts')
     </body>
 </html>

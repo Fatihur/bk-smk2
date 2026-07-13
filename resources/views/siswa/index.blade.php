@@ -242,7 +242,7 @@ function detailSiswa(id) {
             document.getElementById('d-rombel').textContent = data.rombel;
             detailModal.classList.remove('hidden');
         })
-        .catch(() => alert('Gagal memuat data'));
+        .catch(() => toast('Gagal memuat data', 'error'));
 }
 
 function closeDetailModal() {
@@ -309,8 +309,8 @@ siswaForm.addEventListener('submit', function(e) {
         }),
     })
     .then(res => res.json())
-    .then(() => { closeModal(); location.reload(); })
-    .catch(() => alert('Gagal menyimpan data'));
+    .then(() => { closeModal(); toast('Data siswa berhasil disimpan', 'success'); location.reload(); })
+    .catch(() => toast('Gagal menyimpan data', 'error'));
 });
 
 importForm.addEventListener('submit', function(e) {
@@ -325,11 +325,11 @@ importForm.addEventListener('submit', function(e) {
     })
     .then(res => res.json())
     .then(data => {
-        alert(data.message);
+        toast(data.message, 'success');
         closeImportModal();
         location.reload();
     })
-    .catch(() => alert('Gagal import data'));
+    .catch(() => toast('Gagal import data', 'error'));
 });
 
 function editSiswa(id) {
@@ -356,8 +356,8 @@ function hapusSiswa(id) {
         method: 'DELETE',
         headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
     })
-    .then(() => location.reload())
-    .catch(() => alert('Gagal menghapus data'));
+    .then(() => { toast('Data siswa berhasil dihapus', 'success'); location.reload(); })
+    .catch(() => toast('Gagal menghapus data', 'error'));
 }
 </script>
 @endpush

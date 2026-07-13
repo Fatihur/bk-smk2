@@ -68,7 +68,6 @@
                 <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors">Simpan</button>
             </div>
         </form>
-        <div id="notifikasi" class="mt-4 hidden"></div>
     </div>
 </div>
 
@@ -112,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const form = document.getElementById('pelanggaranForm');
-    const notifikasi = document.getElementById('notifikasi');
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -129,16 +127,12 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(res => res.json())
         .then(data => {
-            notifikasi.className = 'mt-4 p-3 rounded-lg text-sm bg-green-50 border border-green-200 text-green-700';
-            notifikasi.textContent = data.message;
-            notifikasi.classList.remove('hidden');
+            toast(data.message, 'success');
             form.reset();
             document.getElementById('tanggal').value = '{{ date('Y-m-d') }}';
         })
         .catch(err => {
-            notifikasi.className = 'mt-4 p-3 rounded-lg text-sm bg-red-50 border border-red-200 text-red-700';
-            notifikasi.textContent = 'Gagal menyimpan pelanggaran';
-            notifikasi.classList.remove('hidden');
+            toast('Gagal menyimpan pelanggaran', 'error');
         });
     });
 });
