@@ -137,6 +137,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelector('#siswaTable tbody').addEventListener('change', function(e) {
         if (e.target.classList.contains('siswa-checkbox')) {
+            const id = parseInt(e.target.value);
+            const nama = e.target.dataset.nama;
+            if (e.target.checked) {
+                if (!selectedSiswa.some(s => s.id === id)) {
+                    selectedSiswa.push({ id, nama });
+                }
+            } else {
+                selectedSiswa = selectedSiswa.filter(s => s.id !== id);
+            }
             const all = document.querySelectorAll('.siswa-checkbox');
             const checked = document.querySelectorAll('.siswa-checkbox:checked');
             document.getElementById('selectAllSiswa').checked = all.length > 0 && all.length === checked.length;
@@ -163,20 +172,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }),
         })
         .then(res => {
-            if (!res.ok) throw new Error('Server error');
+            if (!res.ok) throw res;
             return res.json();
         })
         .then(data => {
             window.toast(data.message, 'success');
             resetForm();
         })
-        .catch(() => {
-            window.toast('Gagal menyimpan pelanggaran', 'error');
+        .catch(async (err) => {
+            let msg = 'Gagal menyimpan pelanggaran';
+            if (err instanceof Response) {
+                try { const body = await err.json(); msg = body.message || msg; } catch {}
+            }
+            window.toast(msg, 'error');
         })
         .finally(() => {
-            btn.disabled = false;
             btn.innerHTML = 'Simpan';
-            btn.className = 'px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors';
+            updateSubmitButton();
         });
     });
 });
@@ -201,10 +213,6 @@ function closeSiswaModal() {
 }
 
 function confirmSiswa() {
-    selectedSiswa = [];
-    document.querySelectorAll('.siswa-checkbox:checked').forEach(cb => {
-        selectedSiswa.push({ id: parseInt(cb.value), nama: cb.dataset.nama });
-    });
     renderSiswaChips();
     closeSiswaModal();
     updateSubmitButton();
