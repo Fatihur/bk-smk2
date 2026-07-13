@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\KirimWaTeguran;
 use App\Models\Pelanggaran;
+use App\Models\PengaturanPoin;
 use App\Models\Siswa;
+use App\Models\SuratTeguran;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PelanggaranController extends Controller
 {
@@ -23,6 +28,8 @@ class PelanggaranController extends Controller
         ]);
 
         $pelanggaran = Pelanggaran::create($validated);
+
+        $this->cekDanTerbitkanTeguran($validated['id_siswa']);
 
         return response()->json(['message' => 'Pelanggaran berhasil dicatat', 'data' => $pelanggaran]);
     }
@@ -52,31 +59,89 @@ class PelanggaranController extends Controller
 
         Pelanggaran::insert($data);
 
+        foreach (array_unique($validated['id_siswa']) as $siswaId) {
+            $this->cekDanTerbitkanTeguran($siswaId);
+        }
+
         return response()->json([
             'message' => count($data) . ' pelanggaran berhasil dicatat',
         ]);
     }
 
+    private function cekDanTerbitkanTeguran(int $idSiswa): void
+    {
+        $siswa = Siswa::find($idSiswa);
+        if (!$siswa) return;
+
+        $totalPoin = Pelanggaran::where('id_siswa', $idSiswa)
+            ->join('jenis_pelanggaran', 'pelanggaran.id_jenis', '=', 'jenis_pelanggaran.id')
+            ->sum('jenis_pelanggaran.poin');
+
+        $pengaturan = PengaturanPoin::orderBy('batas_poin')->get();
+
+        foreach ($pengaturan as $p) {
+            if ($totalPoin >= $p->batas_poin) {
+                $exists = SuratTeguran::where('id_siswa', $idSiswa)
+                    ->where('tingkat', $p->tingkat)
+                    ->exists();
+                if ($exists) continue;
+
+                $pdf = Pdf::loadView('pdf.surat-teguran', [
+                    'tingkat' => strtoupper($p->tingkat),
+                    'siswa' => $siswa,
+                    'totalPoin' => $totalPoin,
+                    'tanggal' => now()->translatedFormat('d F Y'),
+                ]);
+
+                $filename = 'SP_' . $p->tingkat . '_' . $siswa->nisn . '_' . now()->format('Ymd') . '.pdf';
+                Storage::put('public/teguran/' . $filename, $pdf->output());
+
+                $surat = SuratTeguran::create([
+                    'id_siswa' => $idSiswa,
+                    'tingkat' => $p->tingkat,
+                    'total_poin' => $totalPoin,
+                    'file_pdf' => $filename,
+                    'tanggal_terbit' => now()->toDateString(),
+                    'status_terkirim' => false,
+                ]);
+
+                // Auto dispatch WA
+                if ($siswa->no_wali) {
+                    dispatch(new KirimWaTeguran($idSiswa, $p->tingkat, $filename));
+                }
+            }
+        }
+    }
+
     public function riwayat(Request $request)
     {
-        $query = Pelanggaran::with(['siswa', 'jenis']);
+        $query = Siswa::select('siswa.*')
+            ->selectRaw('(SELECT COALESCE(SUM(jp.poin), 0)
+                          FROM pelanggaran p
+                          JOIN jenis_pelanggaran jp ON p.id_jenis = jp.id
+                          WHERE p.id_siswa = siswa.id) as total_poin')
+            ->with(['pelanggaran.jenis', 'suratTeguran']);
 
         if ($request->filled('id_siswa')) {
-            $query->where('id_siswa', $request->id_siswa);
+            $query->where('siswa.id', $request->id_siswa);
         }
 
         if ($request->filled('dari')) {
-            $query->where('tanggal', '>=', $request->dari);
+            $query->whereHas('pelanggaran', fn($q) => $q->where('tanggal', '>=', $request->dari));
         }
 
         if ($request->filled('sampai')) {
-            $query->where('tanggal', '<=', $request->sampai);
+            $query->whereHas('pelanggaran', fn($q) => $q->where('tanggal', '<=', $request->sampai));
         }
 
-        $pelanggaran = $query->orderBy('tanggal', 'desc')->paginate(50);
+        $daftarSiswa = $query->orderBy('total_poin', 'desc')
+            ->paginate(50);
 
-        $siswa = Siswa::orderBy('nama_siswa')->get();
+        $semuaSiswa = Siswa::orderBy('nama_siswa')->get();
 
-        return view('pelanggaran.index', compact('pelanggaran', 'siswa'));
+        return view('pelanggaran.index', [
+            'daftarSiswa' => $daftarSiswa,
+            'siswa' => $semuaSiswa,
+        ]);
     }
 }
