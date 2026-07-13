@@ -18,6 +18,7 @@ Route::middleware(['auth', 'role:guru_bk,kepala_sekolah'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/pelanggaran', [PelanggaranController::class, 'riwayat'])->name('pelanggaran.riwayat');
     Route::get('/surat-teguran', [SuratTeguranController::class, 'index'])->name('teguran.index');
+    Route::get('/surat-teguran/{suratTeguran}', [SuratTeguranController::class, 'show'])->name('teguran.show');
 
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
@@ -45,14 +46,8 @@ Route::middleware(['auth', 'role:guru_bk'])->group(function () {
     Route::post('/pelanggaran/bulk', [PelanggaranController::class, 'bulkStore']);
 
     Route::get('/pengaturan-whatsapp', [WhatsappSettingController::class, 'index'])->name('whatsapp.settings');
-
-    Route::prefix('api/whatsapp')->group(function () {
-        Route::get('/status', [WhatsappSettingController::class, 'status']);
-        Route::post('/start', [WhatsappSettingController::class, 'start']);
-        Route::post('/stop', [WhatsappSettingController::class, 'stop']);
-        Route::post('/destroy', [WhatsappSettingController::class, 'destroy']);
-        Route::get('/logs', [WhatsappSettingController::class, 'logs']);
-    });
+    Route::post('/pengaturan-whatsapp/token', [WhatsappSettingController::class, 'update'])->name('whatsapp.token');
+    Route::post('/pengaturan-whatsapp/test-send', [WhatsappSettingController::class, 'testSend'])->name('whatsapp.test-send');
 
     Route::post('/surat-teguran/{suratTeguran}/kirim-wa', [SuratTeguranController::class, 'kirimWa'])->name('teguran.kirim-wa');
 });
