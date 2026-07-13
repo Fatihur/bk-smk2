@@ -2,11 +2,10 @@
 namespace App\Jobs;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use App\Models\Siswa;
 use App\Models\SuratTeguran;
-use Kstmostofa\LaravelWhatsApp\Facades\WhatsApp;
+use App\Services\FonnteService;
 
 class KirimWaTeguran implements ShouldQueue
 {
@@ -18,7 +17,7 @@ class KirimWaTeguran implements ShouldQueue
         public string $filename
     ) {}
 
-    public function handle(): void
+    public function handle(FonnteService $fonnte): void
     {
         $siswa = Siswa::find($this->idSiswa);
         if (!$siswa) return;
@@ -47,12 +46,11 @@ class KirimWaTeguran implements ShouldQueue
             . "Wassalamu'alaikum Wr. Wb.\n"
             . "SMK Negeri 2 Sumbawa Besar";
 
+        $urlPdf = url('storage/teguran/' . $this->filename);
+
         try {
-            WhatsApp::web('smkn2_monitoring')->messages()->sendDocument($siswa->no_wali, [
-                'url' => config('app.url') . '/storage/teguran/' . $this->filename,
-                'filename' => "Surat_Teguran_{$this->tingkat}.pdf"
-            ]);
-            WhatsApp::web('smkn2_monitoring')->messages()->sendText($siswa->no_wali, $pesan);
+            $fonnte->sendDocument($siswa->no_wali, $urlPdf, "Surat_Teguran_{$this->tingkat}.pdf");
+            $fonnte->sendText($siswa->no_wali, $pesan);
 
             $surat->update(['status_terkirim' => true]);
         } catch (\Exception $e) {
