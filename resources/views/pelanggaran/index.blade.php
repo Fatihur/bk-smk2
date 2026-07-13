@@ -173,6 +173,10 @@
 </div>
 
 @push('scripts')
+<style>
+.accordion-body { display: none; }
+.accordion-body.open { display: table-row; }
+</style>
 <script>
 function toggleAccordion(el) {
     const targetId = el.dataset.target;
