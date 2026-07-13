@@ -14,6 +14,11 @@ class SiswaController extends Controller
         return view('siswa.index', compact('siswa'));
     }
 
+    public function edit(Siswa $siswa)
+    {
+        return response()->json($siswa);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

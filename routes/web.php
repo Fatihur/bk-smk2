@@ -28,6 +28,7 @@ Route::middleware(['auth', 'role:guru_bk'])->group(function () {
     Route::get('/data-siswa', [SiswaController::class, 'index']);
     Route::post('/data-siswa', [SiswaController::class, 'store']);
     Route::post('/data-siswa/import', [SiswaController::class, 'import']);
+    Route::get('/data-siswa/{siswa}/edit', [SiswaController::class, 'edit']);
     Route::put('/data-siswa/{siswa}', [SiswaController::class, 'update']);
     Route::delete('/data-siswa/{siswa}', [SiswaController::class, 'destroy']);
 
@@ -43,6 +44,7 @@ Route::middleware(['auth', 'role:guru_bk'])->group(function () {
     Route::post('/pelanggaran', [PelanggaranController::class, 'store']);
 
     Route::get('/select2/siswa', [Select2Controller::class, 'siswa'])->name('select2.siswa');
+    Route::get('/select2/jenis', [Select2Controller::class, 'jenis'])->name('select2.jenis');
 
     Route::get('/pengaturan-whatsapp', [WhatsappSettingController::class, 'index'])->name('whatsapp.settings');
 

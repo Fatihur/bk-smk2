@@ -37,7 +37,7 @@
         <p>Kepada Yth.,</p>
         <p><strong>{{ $siswa->nama_siswa }}</strong></p>
         <p>NISN: {{ $siswa->nisn }}</p>
-        <p>Kelas: {{ $siswa->rombel }}</p>
+        <p>Rombel: {{ $siswa->rombel }}</p>
         <p>di tempat</p>
 
         <p>Dengan ini kami sampaikan bahwa berdasarkan data pelanggaran yang tercatat, Saudara telah mencapai total poin pelanggaran sebesar <strong>{{ $totalPoin }} poin</strong>.</p>
