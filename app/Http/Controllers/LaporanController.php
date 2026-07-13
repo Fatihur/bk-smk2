@@ -10,13 +10,13 @@ class LaporanController extends Controller
 {
     public function index()
     {
-        $siswa = Siswa::with('kelas')->orderBy('nama')->get();
+        $siswa = Siswa::orderBy('nama_siswa')->get();
         return view('laporan.index', compact('siswa'));
     }
 
     public function cetak()
     {
-        $query = Pelanggaran::with(['siswa.kelas', 'jenis'])->orderBy('tanggal', 'desc');
+        $query = Pelanggaran::with(['siswa', 'jenis'])->orderBy('tanggal', 'desc');
 
         if ($idSiswa = request('id_siswa')) {
             $query->where('id_siswa', $idSiswa);

@@ -11,14 +11,13 @@ class Select2Controller extends Controller
     public function siswa(Request $request)
     {
         $q = $request->input('q', '');
-        $siswa = Siswa::with('kelas')
-            ->where('nama', 'like', "%{$q}%")
+        $siswa = Siswa::where('nama_siswa', 'like', "%{$q}%")
             ->orWhere('nisn', 'like', "%{$q}%")
             ->limit(20)
             ->get()
             ->map(fn($s) => [
                 'id' => $s->id,
-                'text' => "{$s->nama} ({$s->nisn}) - {$s->kelas->tingkat} {$s->kelas->nama_kelas}",
+                'text' => "{$s->nama_siswa} ({$s->nisn}) - {$s->rombel}",
             ]);
 
         return response()->json(['results' => $siswa]);

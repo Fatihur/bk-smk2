@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kelas;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -11,21 +10,29 @@ class SiswaController extends Controller
 {
     public function index()
     {
-        $siswa = Siswa::with('kelas')->get();
-        $kelas = Kelas::orderBy('tingkat')->orderBy('nama_kelas')->get();
-        return view('siswa.index', compact('siswa', 'kelas'));
+        $siswa = Siswa::orderBy('nama_siswa')->get();
+        return view('siswa.index', compact('siswa'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'nama_siswa' => 'required|max:100',
+            'jk' => 'required|in:L,P',
             'nisn' => 'required|unique:siswa',
-            'nama' => 'required|max:100',
-            'id_kelas' => 'required|exists:kelas,id',
+            'tempat_lahir' => 'required|max:50',
+            'tgl_lahir' => 'required|date',
+            'nik' => 'required|max:20',
+            'agama' => 'required|max:20',
+            'alamat' => 'required',
+            'hp' => 'nullable|max:20',
+            'ayah' => 'nullable|max:100',
+            'ibu' => 'nullable|max:100',
+            'no_wali' => 'nullable|max:20',
+            'rombel' => 'required|in:X KJJ,XI KJJ,XII KJJ',
         ]);
 
         $siswa = Siswa::create($validated);
-        $siswa->load('kelas');
 
         return response()->json(['message' => 'Siswa berhasil ditambahkan', 'data' => $siswa]);
     }
@@ -33,13 +40,22 @@ class SiswaController extends Controller
     public function update(Request $request, Siswa $siswa)
     {
         $validated = $request->validate([
+            'nama_siswa' => 'required|max:100',
+            'jk' => 'required|in:L,P',
             'nisn' => 'required|unique:siswa,nisn,' . $siswa->id,
-            'nama' => 'required|max:100',
-            'id_kelas' => 'required|exists:kelas,id',
+            'tempat_lahir' => 'required|max:50',
+            'tgl_lahir' => 'required|date',
+            'nik' => 'required|max:20',
+            'agama' => 'required|max:20',
+            'alamat' => 'required',
+            'hp' => 'nullable|max:20',
+            'ayah' => 'nullable|max:100',
+            'ibu' => 'nullable|max:100',
+            'no_wali' => 'nullable|max:20',
+            'rombel' => 'required|in:X KJJ,XI KJJ,XII KJJ',
         ]);
 
         $siswa->update($validated);
-        $siswa->load('kelas');
 
         return response()->json(['message' => 'Siswa berhasil diperbarui', 'data' => $siswa]);
     }
@@ -62,23 +78,22 @@ class SiswaController extends Controller
 
         foreach ($rows as $row) {
             $nisn = $row[0] ?? null;
-            $nama = $row[1] ?? null;
-            $namaKelas = $row[2] ?? null;
+            $namaSiswa = $row[1] ?? null;
+            $rombel = $row[2] ?? null;
 
-            if (!$nisn || !$nama || !$namaKelas) {
+            if (!$nisn || !$namaSiswa || !$rombel) {
                 $skipped++;
                 continue;
             }
 
-            $kelas = Kelas::where('nama_kelas', $namaKelas)->first();
-            if (!$kelas) {
+            if (!in_array($rombel, ['X KJJ', 'XI KJJ', 'XII KJJ'])) {
                 $skipped++;
                 continue;
             }
 
             Siswa::updateOrCreate(
                 ['nisn' => $nisn],
-                ['nama' => $nama, 'id_kelas' => $kelas->id]
+                ['nama_siswa' => $namaSiswa, 'rombel' => $rombel]
             );
             $imported++;
         }

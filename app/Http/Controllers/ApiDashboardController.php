@@ -20,13 +20,13 @@ class ApiDashboardController extends Controller
             ->orderBy('total', 'desc')
             ->first();
 
-        $terbaru = Pelanggaran::with(['siswa.kelas', 'jenis'])
+        $terbaru = Pelanggaran::with(['siswa', 'jenis'])
             ->orderBy('id', 'desc')
             ->limit(10)
             ->get()
             ->map(fn($p) => [
-                'siswa' => $p->siswa->nama ?? '-',
-                'kelas' => $p->siswa->kelas->nama_kelas ?? '-',
+                'siswa' => $p->siswa->nama_siswa ?? '-',
+                'kelas' => $p->siswa->rombel ?? '-',
                 'jenis' => $p->jenis->nama ?? '-',
                 'tanggal' => $p->tanggal,
             ]);
