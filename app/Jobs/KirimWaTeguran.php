@@ -5,7 +5,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use App\Models\Siswa;
 use App\Models\SuratTeguran;
-use App\Services\FonnteService;
+use App\Services\BaileysService;
 
 class KirimWaTeguran implements ShouldQueue
 {
@@ -17,7 +17,7 @@ class KirimWaTeguran implements ShouldQueue
         public string $filename
     ) {}
 
-    public function handle(FonnteService $fonnte): void
+    public function handle(BaileysService $wa): void
     {
         $siswa = Siswa::find($this->idSiswa);
         if (!$siswa) return;
@@ -46,11 +46,11 @@ class KirimWaTeguran implements ShouldQueue
             . "Wassalamu'alaikum Wr. Wb.\n"
             . "SMK Negeri 2 Sumbawa Besar";
 
-        $urlPdf = url('storage/teguran/' . $this->filename);
+        $filePath = storage_path('app/public/teguran/' . $this->filename);
 
         try {
-            $fonnte->sendDocument($siswa->no_wali, $urlPdf, "Surat_Teguran_{$this->tingkat}.pdf");
-            $fonnte->sendText($siswa->no_wali, $pesan);
+            $wa->sendDocument($siswa->no_wali, $filePath, "Surat_Teguran_{$this->tingkat}.pdf", $pesan);
+            $wa->sendText($siswa->no_wali, $pesan);
 
             $surat->update(['status_terkirim' => true]);
         } catch (\Exception $e) {

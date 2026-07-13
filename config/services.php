@@ -35,8 +35,8 @@ return [
         ],
     ],
 
-    'fonnte' => [
-        'token' => env('FONNTE_TOKEN'),
+    'baileys' => [
+        'url' => env('BAILEYS_URL', 'http://127.0.0.1:3001'),
     ],
 
 ];

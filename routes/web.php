@@ -45,8 +45,10 @@ Route::middleware(['auth', 'role:guru_bk'])->group(function () {
     Route::post('/pelanggaran/bulk', [PelanggaranController::class, 'bulkStore']);
 
     Route::get('/pengaturan-whatsapp', [WhatsappSettingController::class, 'index'])->name('whatsapp.settings');
-    Route::post('/pengaturan-whatsapp/token', [WhatsappSettingController::class, 'update'])->name('whatsapp.token');
+    Route::get('/api/whatsapp/status', [WhatsappSettingController::class, 'status'])->name('whatsapp.status');
+    Route::get('/api/whatsapp/start', [WhatsappSettingController::class, 'start'])->name('whatsapp.start');
     Route::post('/pengaturan-whatsapp/test-send', [WhatsappSettingController::class, 'testSend'])->name('whatsapp.test-send');
+    Route::post('/pengaturan-whatsapp/logout', [WhatsappSettingController::class, 'logout'])->name('whatsapp.logout');
 
     Route::post('/surat-teguran/{suratTeguran}/kirim-wa', [SuratTeguranController::class, 'kirimWa'])->name('teguran.kirim-wa');
 });

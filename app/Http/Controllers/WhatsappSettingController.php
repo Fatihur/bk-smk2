@@ -2,47 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\FonnteService;
+use App\Services\BaileysService;
 use Illuminate\Http\Request;
 
 class WhatsappSettingController extends Controller
 {
     public function index()
     {
-        $token = config('services.fonnte.token');
-        return view('pengaturan-whatsapp.index', compact('token'));
+        return view('pengaturan-whatsapp.index');
     }
 
-    public function update(Request $request)
+    public function status(Request $request, BaileysService $wa)
     {
-        $validated = $request->validate([
-            'token' => 'required|string',
-        ]);
-
-        $path = base_path('.env');
-        $content = file_get_contents($path);
-        $content = preg_replace(
-            '/^FONNTE_TOKEN=.*$/m',
-            'FONNTE_TOKEN=' . $validated['token'],
-            $content
-        );
-        if (!str_contains($content, 'FONNTE_TOKEN=')) {
-            $content .= "\nFONNTE_TOKEN=" . $validated['token'] . "\n";
-        }
-        file_put_contents($path, $content);
-
-        return redirect()->route('whatsapp.settings')->with('success', 'Token Fonnte berhasil disimpan');
+        return response()->json($wa->status());
     }
 
-    public function testSend(Request $request, FonnteService $fonnte)
+    public function start(Request $request, BaileysService $wa)
+    {
+        return response()->json($wa->start());
+    }
+
+    public function testSend(Request $request, BaileysService $wa)
     {
         $validated = $request->validate([
             'target' => 'required|string',
         ]);
 
-        $result = $fonnte->sendText($validated['target'], 'Test pesan dari SMKN 2 Sumbawa — Sistem Monitoring Kedisiplinan.');
+        $result = $wa->sendText($validated['target'], 'Test pesan dari SMKN 2 Sumbawa — Sistem Monitoring Kedisiplinan.');
 
-        if (isset($result['status']) && $result['status']) {
+        if (isset($result['success']) && $result['success']) {
             return response()->json(['success' => true, 'message' => 'Pesan test berhasil dikirim']);
         }
 
@@ -50,5 +38,11 @@ class WhatsappSettingController extends Controller
             'success' => false,
             'message' => $result['reason'] ?? 'Gagal mengirim pesan',
         ], 422);
+    }
+
+    public function logout(Request $request, BaileysService $wa)
+    {
+        $wa->logout();
+        return redirect()->route('whatsapp.settings')->with('success', 'Session WhatsApp berhasil dihapus');
     }
 }
