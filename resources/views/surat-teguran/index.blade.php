@@ -95,7 +95,7 @@
         .then(({ ok, data }) => {
             if (ok) {
                 toast(data.message, 'success');
-                location.reload();
+                setTimeout(() => location.reload(), 1200);
             } else {
                 toast(data.message, 'error');
             }

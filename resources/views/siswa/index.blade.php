@@ -309,7 +309,7 @@ siswaForm.addEventListener('submit', function(e) {
         }),
     })
     .then(res => res.json())
-    .then(() => { closeModal(); toast('Data siswa berhasil disimpan', 'success'); location.reload(); })
+    .then(() => { closeModal(); toast('Data siswa berhasil disimpan', 'success'); setTimeout(() => location.reload(), 1200); })
     .catch(() => toast('Gagal menyimpan data', 'error'));
 });
 
@@ -327,7 +327,7 @@ importForm.addEventListener('submit', function(e) {
     .then(data => {
         toast(data.message, 'success');
         closeImportModal();
-        location.reload();
+        setTimeout(() => location.reload(), 1200);
     })
     .catch(() => toast('Gagal import data', 'error'));
 });
@@ -356,7 +356,7 @@ function hapusSiswa(id) {
         method: 'DELETE',
         headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
     })
-    .then(() => { toast('Data siswa berhasil dihapus', 'success'); location.reload(); })
+    .then(() => { toast('Data siswa berhasil dihapus', 'success'); setTimeout(() => location.reload(), 1200); })
     .catch(() => toast('Gagal menghapus data', 'error'));
 }
 </script>

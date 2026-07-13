@@ -100,7 +100,7 @@ form.addEventListener('submit', function(e) {
     .then(data => {
         closeModal();
         toast('Data berhasil disimpan', 'success');
-        location.reload();
+        setTimeout(() => location.reload(), 1200);
     })
     .catch(err => toast('Gagal menyimpan data', 'error'));
 });
@@ -116,7 +116,7 @@ function hapusJenis(id) {
         headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
     })
     .then(res => res.json())
-    .then(() => { toast('Data berhasil dihapus', 'success'); location.reload(); })
+    .then(() => { toast('Data berhasil dihapus', 'success'); setTimeout(() => location.reload(), 1200); })
     .catch(() => toast('Gagal menghapus data', 'error'));
 }
 </script>
