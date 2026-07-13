@@ -5,8 +5,6 @@
     $guruBkMenu = [
         ['label' => 'Dashboard', 'icon' => '📊', 'url' => '/dashboard'],
         ['label' => 'Data Siswa', 'icon' => '👥', 'url' => '/data-siswa'],
-        ['label' => 'Data Orang Tua', 'icon' => '👨‍👩‍👧‍👦', 'url' => '/data-orang-tua'],
-        ['label' => 'Data Kelas', 'icon' => '🏫', 'url' => '/data-kelas'],
         ['label' => 'Jenis Pelanggaran', 'icon' => '⚠️', 'url' => '/jenis-pelanggaran'],
         ['label' => 'Pengaturan Poin', 'icon' => '⚙️', 'url' => '/pengaturan-poin'],
         ['label' => 'Input Pelanggaran', 'icon' => '📝', 'url' => '/pelanggaran/input'],

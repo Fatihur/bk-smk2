@@ -6,9 +6,7 @@
         'dashboard' => ['icon' => 'dashboard', 'label' => 'Dashboard', 'children' => []],
         'Data Master' => [
             'children' => [
-                ['label' => 'Data Kelas', 'icon' => 'academic', 'url' => '/data-kelas'],
                 ['label' => 'Data Siswa', 'icon' => 'users', 'url' => '/data-siswa'],
-                ['label' => 'Data Orang Tua', 'icon' => 'user-group', 'url' => '/data-orang-tua'],
             ],
         ],
         'Pelanggaran' => [
@@ -32,7 +30,7 @@
         ],
     ];
 
-    $kepsekOnly = ['/data-kelas', '/data-siswa', '/data-orang-tua', '/jenis-pelanggaran', '/pengaturan-poin', '/pelanggaran/input', '/surat-teguran', '/pengaturan-whatsapp'];
+    $kepsekOnly = ['/data-siswa', '/jenis-pelanggaran', '/pengaturan-poin', '/pelanggaran/input', '/surat-teguran', '/pengaturan-whatsapp'];
     if ($role === 'kepala_sekolah') {
         foreach ($groups as $key => $g) {
             if ($key === 'dashboard') continue;
