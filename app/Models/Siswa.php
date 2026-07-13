@@ -4,26 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Siswa extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
     protected $table = 'siswa';
-    protected $fillable = ['nisn', 'nama', 'id_kelas'];
-
-    public function kelas(): BelongsTo
-    {
-        return $this->belongsTo(Kelas::class, 'id_kelas');
-    }
-
-    public function orangTua(): HasMany
-    {
-        return $this->hasMany(OrangTua::class, 'id_siswa');
-    }
+    protected $fillable = [
+        'nama_siswa', 'jk', 'nisn', 'tempat_lahir', 'tgl_lahir', 'nik',
+        'agama', 'alamat', 'hp', 'ayah', 'ibu', 'no_wali', 'rombel'
+    ];
 
     public function pelanggaran(): HasMany
     {
