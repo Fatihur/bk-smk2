@@ -60,15 +60,15 @@
     </div>
 </div>
 
-<div id="detailModal" class="fixed inset-0 z-50 hidden bg-gray-900/50 backdrop-blur-sm flex items-center justify-center">
-    <div class="bg-white rounded-xl border border-gray-200 p-6 w-full max-w-lg mx-4 shadow-xl">
+<div id="detailModal" class="fixed inset-0 z-50 hidden bg-gray-900/50 backdrop-blur-sm flex items-center justify-center overflow-y-auto">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 w-full max-w-lg mx-4 shadow-xl my-8">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-900">Detail Siswa</h2>
             <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
-        <div id="detailContent" class="space-y-3 text-sm">
+        <div id="detailContent" class="space-y-3 text-sm max-h-[70vh] overflow-y-auto pr-1">
             <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">NISN</span><span class="col-span-2 font-medium" id="d-nisn"></span></div>
             <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Nama</span><span class="col-span-2 font-medium" id="d-nama"></span></div>
             <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">JK</span><span class="col-span-2" id="d-jk"></span></div>
