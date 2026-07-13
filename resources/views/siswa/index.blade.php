@@ -132,11 +132,11 @@
 <div id="importModal" class="fixed inset-0 z-50 hidden bg-gray-900/50 backdrop-blur-sm flex items-center justify-center">
     <div class="bg-white rounded-xl border border-gray-200 p-6 w-full max-w-md mx-4 shadow-xl">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Import Siswa dari Excel</h2>
-        <p class="text-sm text-gray-500 mb-4">Format: Kolom A = NISN, Kolom B = Nama, Kolom C = Rombel (X KJJ / XI KJJ / XII KJJ)</p>
+        <p class="text-sm text-gray-500 mb-4">Format file Dapodik (.xls / .xlsx). Hanya siswa KJJ yang diimport.</p>
         <form id="importForm" enctype="multipart/form-data">
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-1">File Excel (.xlsx / .csv)</label>
-                <input type="file" id="importFile" accept=".xlsx,.csv" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-600 file:text-white hover:file:bg-purple-700 file:transition-colors" required>
+                <label class="block text-sm font-medium text-gray-700 mb-1">File Excel (.xls / .xlsx)</label>
+                <input type="file" id="importFile" accept=".xls,.xlsx" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-600 file:text-white hover:file:bg-purple-700 file:transition-colors" required>
             </div>
             <div class="flex justify-end gap-3 mt-6">
                 <button type="button" onclick="closeImportModal()" class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2 font-medium">Batal</button>
