@@ -17,7 +17,7 @@
                 <select name="id_siswa" class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none">
                     <option value="">Semua</option>
                     @foreach ($siswa as $s)
-                    <option value="{{ $s->id }}" {{ request('id_siswa') == $s->id ? 'selected' : '' }}>{{ $s->nama }}</option>
+                    <option value="{{ $s->id }}" {{ request('id_siswa') == $s->id ? 'selected' : '' }}>{{ $s->nama_siswa }}</option>
                     @endforeach
                 </select>
             </div>
@@ -43,7 +43,7 @@
             <thead>
                 <tr class="text-gray-500 text-xs uppercase tracking-wider bg-gray-50">
                     <th class="text-left px-5 py-3 font-medium">Siswa</th>
-                    <th class="text-left px-5 py-3 font-medium">Kelas</th>
+                    <th class="text-left px-5 py-3 font-medium">Rombel</th>
                     <th class="text-left px-5 py-3 font-medium">Pelanggaran</th>
                     <th class="text-left px-5 py-3 font-medium">Poin</th>
                     <th class="text-left px-5 py-3 font-medium">Tanggal</th>
@@ -53,8 +53,8 @@
             <tbody>
                 @forelse ($pelanggaran as $p)
                 <tr class="border-t border-gray-100 hover:bg-gray-50">
-                    <td class="px-5 py-3.5 text-gray-900">{{ $p->siswa->nama }}</td>
-                    <td class="px-5 py-3.5 text-gray-500">{{ $p->siswa->kelas->tingkat }} {{ $p->siswa->kelas->nama_kelas }}</td>
+                    <td class="px-5 py-3.5 text-gray-900">{{ $p->siswa->nama_siswa }}</td>
+                    <td class="px-5 py-3.5 text-gray-500">{{ $p->siswa->rombel }}</td>
                     <td class="px-5 py-3.5 text-gray-900">{{ $p->jenis->nama }}</td>
                     <td class="px-5 py-3.5 text-gray-900">{{ $p->jenis->poin }}</td>
                     <td class="px-5 py-3.5 text-gray-500">{{ \Carbon\Carbon::parse($p->tanggal)->format('d/m/Y') }}</td>

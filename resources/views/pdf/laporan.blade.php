@@ -30,7 +30,7 @@
 
     <div class="info">
         @if ($siswa)
-        Siswa: {{ $siswa->nama }} ({{ $siswa->kelas->nama_kelas ?? '-' }})<br>
+        Siswa: {{ $siswa->nama_siswa }} ({{ $siswa->rombel }})<br>
         @endif
         @if (request('dari'))
         Dari: {{ request('dari') }}<br>
@@ -45,7 +45,7 @@
             <tr>
                 <th style="width: 40px;">No</th>
                 <th>Nama Siswa</th>
-                <th style="width: 80px;">Kelas</th>
+                <th style="width: 80px;">Rombel</th>
                 <th>Pelanggaran</th>
                 <th style="width: 50px;">Poin</th>
                 <th style="width: 90px;">Tanggal</th>
@@ -55,8 +55,8 @@
             @forelse ($pelanggaran as $i => $p)
             <tr>
                 <td class="text-center">{{ $i + 1 }}</td>
-                <td>{{ $p->siswa->nama ?? '-' }}</td>
-                <td class="text-center">{{ $p->siswa->kelas->nama_kelas ?? '-' }}</td>
+                <td>{{ $p->siswa->nama_siswa ?? '-' }}</td>
+                <td class="text-center">{{ $p->siswa->rombel }}</td>
                 <td>{{ $p->jenis->nama ?? '-' }}</td>
                 <td class="text-center">{{ $p->jenis->poin ?? 0 }}</td>
                 <td>{{ \Carbon\Carbon::parse($p->tanggal)->format('d/m/Y') }}</td>

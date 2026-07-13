@@ -35,9 +35,9 @@
         <p>Perihal: Surat Teguran {{ $tingkat }}</p>
 
         <p>Kepada Yth.,</p>
-        <p><strong>{{ $siswa->nama }}</strong></p>
+        <p><strong>{{ $siswa->nama_siswa }}</strong></p>
         <p>NISN: {{ $siswa->nisn }}</p>
-        <p>Kelas: {{ $siswa->kelas->tingkat }} {{ $siswa->kelas->nama_kelas }}</p>
+        <p>Kelas: {{ $siswa->rombel }}</p>
         <p>di tempat</p>
 
         <p>Dengan ini kami sampaikan bahwa berdasarkan data pelanggaran yang tercatat, Saudara telah mencapai total poin pelanggaran sebesar <strong>{{ $totalPoin }} poin</strong>.</p>

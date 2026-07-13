@@ -11,7 +11,7 @@
                 <select name="id_siswa" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none">
                     <option value="">Semua Siswa</option>
                     @foreach ($siswa as $s)
-                    <option value="{{ $s->id }}">{{ $s->nama }} - {{ $s->kelas->nama_kelas ?? '-' }}</option>
+                    <option value="{{ $s->id }}">{{ $s->nama_siswa }} - {{ $s->rombel }}</option>
                     @endforeach
                 </select>
             </div>
