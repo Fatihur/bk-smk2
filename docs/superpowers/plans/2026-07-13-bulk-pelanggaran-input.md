@@ -1,3 +1,111 @@
+# Bulk Pelanggaran Input Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) for tracking.
+
+**Goal:** Replace the single-entry Select2-based pelanggaran input page with a bulk workflow: select multiple students + one violation type, submit once.
+
+**Architecture:** Server-side: one new `POST /pelanggaran/bulk` route + `bulkStore()` method using `Pelanggaran::insert()`. Client-side: rewrite `create.blade.php` with 2 modals (DataTable siswa with checkboxes, jenis radio list), chips for selected items, and a JSON submit handler. Remove Select2 entirely.
+
+**Tech Stack:** Laravel 13, jQuery 3.7.1 (already loaded via layout CDN), DataTables 2.2.2 (already loaded via layout CDN), Tailwind CSS, no Select2.
+
+---
+
+### Task 1: Backend — Route, Controller, Select2 Cleanup
+
+**Files:**
+- Modify: `routes/web.php:27-48`
+- Modify: `app/Http/Controllers/PelanggaranController.php:16-52`
+- Create: (no new file)
+- Delete: `app/Http/Controllers/Select2Controller.php`
+- Delete: `resources/views/layouts/app.blade.php:11,14`
+
+- [ ] **Step 1: Add bulkStore method to PelanggaranController**
+
+```php
+// app/Http/Controllers/PelanggaranController.php — add after store()
+
+public function bulkStore(Request $request)
+{
+    $validated = $request->validate([
+        'id_siswa' => 'required|array|min:1',
+        'id_siswa.*' => 'exists:siswa,id',
+        'id_jenis' => 'required|exists:jenis_pelanggaran,id',
+        'tanggal' => 'required|date',
+        'keterangan' => 'nullable|string',
+    ]);
+
+    $data = [];
+    foreach ($validated['id_siswa'] as $id) {
+        $data[] = [
+            'id_siswa' => $id,
+            'id_jenis' => $validated['id_jenis'],
+            'tanggal' => $validated['tanggal'],
+            'keterangan' => $validated['keterangan'],
+        ];
+    }
+
+    Pelanggaran::insert($data);
+
+    return response()->json([
+        'message' => count($data) . ' pelanggaran berhasil dicatat',
+    ]);
+}
+```
+
+- [ ] **Step 2: Register new route, remove select2 routes**
+
+Replace the pelanggaran/select2 routes in `routes/web.php`:
+
+```php
+// In routes/web.php, in the 'role:guru_bk' group:
+// ADD before the select2 routes:
+Route::post('/pelanggaran/bulk', [PelanggaranController::class, 'bulkStore']);
+
+// DELETE these two lines:
+// Route::get('/select2/siswa', [Select2Controller::class, 'siswa'])->name('select2.siswa');
+// Route::get('/select2/jenis', [Select2Controller::class, 'jenis'])->name('select2.jenis');
+```
+
+- [ ] **Step 3: Remove Select2 CDN from layout**
+
+In `resources/views/layouts/app.blade.php`:
+- Delete line 11: `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">`
+- Delete line 14: `<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>`
+
+Also remove the unused import in `routes/web.php`:
+```php
+// Delete this line:
+use App\Http\Controllers\Select2Controller;
+```
+
+- [ ] **Step 4: Delete Select2Controller.php file**
+
+Delete `app/Http/Controllers/Select2Controller.php`.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add routes/web.php app/Http/Controllers/PelanggaranController.php resources/views/layouts/app.blade.php
+git rm app/Http/Controllers/Select2Controller.php
+git commit -m "feat: add bulkStore for pelanggaran, remove select2"
+```
+
+---
+
+### Task 2: Frontend — Rewrite create.blade.php
+
+**Files:**
+- Rewrite: `resources/views/pelanggaran/create.blade.php` (full replacement)
+
+**Interfaces:**
+- Consumes: `POST /pelanggaran/bulk` (JSON) from Task 1
+- Produces: the input page with bulk workflow
+
+- [ ] **Step 1: Write the new create.blade.php**
+
+Full rewrite of `resources/views/pelanggaran/create.blade.php`:
+
+```blade
 <x-app-layout>
 @php
     $siswaData = \App\Models\Siswa::orderBy('nama_siswa')->get(['id', 'nisn', 'nama_siswa', 'jk', 'rombel']);
@@ -13,6 +121,7 @@
             <div class="mb-5">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Siswa</label>
                 <div id="selectedSiswa" class="flex flex-wrap gap-2 mb-2 min-h-[32px]">
+                    <span class="text-sm text-gray-400" id="siswaPlaceholder">Belum ada siswa dipilih</span>
                 </div>
                 <button type="button" onclick="openSiswaModal()"
                     class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors">
@@ -23,6 +132,7 @@
             <div class="mb-5">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Pelanggaran</label>
                 <div id="selectedJenis" class="mb-2 min-h-[32px]">
+                    <span class="text-sm text-gray-400" id="jenisPlaceholder">Belum dipilih</span>
                 </div>
                 <button type="button" onclick="openJenisModal()"
                     class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors">
@@ -99,7 +209,7 @@
 @push('scripts')
 <script>
 let selectedSiswa = [];
-let selectedJenis = [];
+let selectedJenis = null;
 let jenisData = @json($jenisData);
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -123,15 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
         ],
         order: [[2, 'asc']],
         pageLength: 10,
-            language: {
-                search: 'Cari:',
-                lengthMenu: 'Tampilkan _MENU_ data',
-                info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ data',
-                infoEmpty: 'Tidak ada data',
-                infoFiltered: '(disaring dari _MAX_ total data)',
-                zeroRecords: 'Data tidak ditemukan',
-                paginate: { first: 'Awal', last: 'Akhir', next: '→', previous: '←' },
-            },
+        language: { url: '//cdn.datatables.net/plug-ins/2.2.2/i18n/id.json' },
         drawCallback: function() {
             document.querySelectorAll('.siswa-checkbox').forEach(cb => {
                 cb.checked = selectedSiswa.some(s => s.id == cb.value);
@@ -145,15 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelector('#siswaTable tbody').addEventListener('change', function(e) {
         if (e.target.classList.contains('siswa-checkbox')) {
-            const id = parseInt(e.target.value);
-            const nama = e.target.dataset.nama;
-            if (e.target.checked) {
-                if (!selectedSiswa.some(s => s.id === id)) {
-                    selectedSiswa.push({ id, nama });
-                }
-            } else {
-                selectedSiswa = selectedSiswa.filter(s => s.id !== id);
-            }
             const all = document.querySelectorAll('.siswa-checkbox');
             const checked = document.querySelectorAll('.siswa-checkbox:checked');
             document.getElementById('selectAllSiswa').checked = all.length > 0 && all.length === checked.length;
@@ -162,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('pelanggaranForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        if (selectedSiswa.length === 0 || selectedJenis.length === 0) return;
+        if (selectedSiswa.length === 0 || !selectedJenis) return;
 
         const btn = document.getElementById('btnSubmit');
         btn.disabled = true;
@@ -174,29 +267,23 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
             body: JSON.stringify({
                 id_siswa: selectedSiswa.map(s => s.id),
-                id_jenis: selectedJenis.map(j => j.id),
+                id_jenis: selectedJenis.id,
                 tanggal: document.getElementById('tanggal').value,
                 keterangan: document.getElementById('keterangan').value,
             }),
         })
-        .then(res => {
-            if (!res.ok) throw res;
-            return res.json();
-        })
+        .then(res => res.json())
         .then(data => {
             window.toast(data.message, 'success');
-            setTimeout(() => { window.location.href = '/pelanggaran'; }, 1200);
+            resetForm();
         })
-        .catch(async (err) => {
-            let msg = 'Gagal menyimpan pelanggaran';
-            if (err instanceof Response) {
-                try { const body = await err.json(); msg = body.message || msg; } catch {}
-            }
-            window.toast(msg, 'error');
+        .catch(() => {
+            window.toast('Gagal menyimpan pelanggaran', 'error');
         })
         .finally(() => {
+            btn.disabled = false;
             btn.innerHTML = 'Simpan';
-            updateSubmitButton();
+            btn.className = 'px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors';
         });
     });
 });
@@ -204,8 +291,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function renderJenisList(data) {
     const container = document.getElementById('jenisList');
     container.innerHTML = data.map(j => `
-        <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${selectedJenis.some(s => s.id == j.id) ? 'border-purple-500 bg-purple-50' : ''}">
-            <input type="checkbox" class="jenis-checkbox" value="${j.id}" data-nama="${j.nama}" data-poin="${j.poin}" ${selectedJenis.some(s => s.id == j.id) ? 'checked' : ''}>
+        <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${selectedJenis?.id == j.id ? 'border-purple-500 bg-purple-50' : ''}">
+            <input type="radio" name="id_jenis" value="${j.id}" data-nama="${j.nama}" data-poin="${j.poin}" ${selectedJenis?.id == j.id ? 'checked' : ''}>
             <span class="text-sm text-gray-800">${j.nama} <span class="text-gray-400">(${j.poin} poin)</span></span>
         </label>
     `).join('');
@@ -221,6 +308,10 @@ function closeSiswaModal() {
 }
 
 function confirmSiswa() {
+    selectedSiswa = [];
+    document.querySelectorAll('.siswa-checkbox:checked').forEach(cb => {
+        selectedSiswa.push({ id: parseInt(cb.value), nama: cb.dataset.nama });
+    });
     renderSiswaChips();
     closeSiswaModal();
     updateSubmitButton();
@@ -228,9 +319,10 @@ function confirmSiswa() {
 
 function renderSiswaChips() {
     const container = document.getElementById('selectedSiswa');
+    const placeholder = document.getElementById('siswaPlaceholder');
     container.innerHTML = '';
     if (selectedSiswa.length === 0) {
-        container.innerHTML = '<span class="text-sm text-gray-400">Belum ada siswa dipilih</span>';
+        container.appendChild(placeholder);
         return;
     }
     selectedSiswa.forEach((s, i) => {
@@ -257,10 +349,14 @@ function closeJenisModal() {
 }
 
 function confirmJenis() {
-    selectedJenis = [];
-    document.querySelectorAll('.jenis-checkbox:checked').forEach(cb => {
-        selectedJenis.push({ id: parseInt(cb.value), nama: cb.dataset.nama, poin: cb.dataset.poin });
-    });
+    const checked = document.querySelector('input[name="id_jenis"]:checked');
+    if (checked) {
+        selectedJenis = {
+            id: parseInt(checked.value),
+            nama: checked.dataset.nama,
+            poin: checked.dataset.poin,
+        };
+    }
     renderJenisChip();
     closeJenisModal();
     updateSubmitButton();
@@ -268,28 +364,27 @@ function confirmJenis() {
 
 function renderJenisChip() {
     const container = document.getElementById('selectedJenis');
+    const placeholder = document.getElementById('jenisPlaceholder');
     container.innerHTML = '';
-    if (selectedJenis.length === 0) {
-        container.innerHTML = '<span class="text-sm text-gray-400">Belum dipilih</span>';
+    if (!selectedJenis) {
+        container.appendChild(placeholder);
         return;
     }
-    selectedJenis.forEach((j, i) => {
-        const chip = document.createElement('span');
-        chip.className = 'inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full';
-        chip.innerHTML = `${j.nama} (${j.poin} poin) <button type="button" onclick="removeJenis(${i})" class="text-purple-400 hover:text-purple-600">&times;</button>`;
-        container.appendChild(chip);
-    });
+    const chip = document.createElement('span');
+    chip.className = 'inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full';
+    chip.innerHTML = `${selectedJenis.nama} (${selectedJenis.poin} poin) <button type="button" onclick="removeJenis()" class="text-purple-400 hover:text-purple-600">&times;</button>`;
+    container.appendChild(chip);
 }
 
-function removeJenis(index) {
-    selectedJenis.splice(index, 1);
+function removeJenis() {
+    selectedJenis = null;
     renderJenisChip();
     updateSubmitButton();
 }
 
 function updateSubmitButton() {
     const btn = document.getElementById('btnSubmit');
-    const enabled = selectedSiswa.length > 0 && selectedJenis.length > 0;
+    const enabled = selectedSiswa.length > 0 && selectedJenis !== null;
     btn.disabled = !enabled;
     btn.className = enabled
         ? 'px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors'
@@ -308,3 +403,19 @@ function resetForm() {
 </script>
 @endpush
 </x-app-layout>
+```
+
+- [ ] **Step 2: Verify the view renders correctly**
+
+Run: `php artisan route:list | findstr pelanggaran`
+Expected: shows `POST pelanggaran/bulk` and `GET pelanggaran/input`
+
+Run: `php artisan view:clear` then open `/pelanggaran/input` in browser.
+Check: page loads without errors, no select2 references in console.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add resources/views/pelanggaran/create.blade.php
+git commit -m "feat: rewrite pelanggaran input page with bulk workflow"
+```

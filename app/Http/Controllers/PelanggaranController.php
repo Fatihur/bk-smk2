@@ -32,19 +32,22 @@ class PelanggaranController extends Controller
         $validated = $request->validate([
             'id_siswa' => 'required|array|min:1',
             'id_siswa.*' => 'exists:siswa,id',
-            'id_jenis' => 'required|exists:jenis_pelanggaran,id',
+            'id_jenis' => 'required|array|min:1',
+            'id_jenis.*' => 'exists:jenis_pelanggaran,id',
             'tanggal' => 'required|date',
             'keterangan' => 'nullable|string',
         ]);
 
         $data = [];
-        foreach ($validated['id_siswa'] as $id) {
-            $data[] = [
-                'id_siswa' => $id,
-                'id_jenis' => $validated['id_jenis'],
-                'tanggal' => $validated['tanggal'],
-                'keterangan' => $validated['keterangan'],
-            ];
+        foreach ($validated['id_siswa'] as $siswaId) {
+            foreach ($validated['id_jenis'] as $jenisId) {
+                $data[] = [
+                    'id_siswa' => $siswaId,
+                    'id_jenis' => $jenisId,
+                    'tanggal' => $validated['tanggal'],
+                    'keterangan' => $validated['keterangan'],
+                ];
+            }
         }
 
         Pelanggaran::insert($data);
