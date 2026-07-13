@@ -296,15 +296,6 @@ function updateSubmitButton() {
         : 'px-6 py-2 bg-purple-400 text-white text-sm font-medium rounded-lg cursor-not-allowed';
 }
 
-function resetForm() {
-    selectedSiswa = [];
-    selectedJenis = null;
-    renderSiswaChips();
-    renderJenisChip();
-    document.getElementById('keterangan').value = '';
-    document.getElementById('tanggal').value = '{{ date('Y-m-d') }}';
-    updateSubmitButton();
-}
 </script>
 @endpush
 </x-app-layout>
