@@ -14,6 +14,12 @@
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-6">
         <form method="GET" action="{{ route('pelanggaran.riwayat') }}" class="flex flex-wrap gap-4 items-end">
             <div>
+                <label class="block text-xs text-gray-500 font-medium mb-1">Cari</label>
+                <input type="text" name="search" value="{{ request('search') }}"
+                    class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 w-48 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                    placeholder="Nama atau NISN">
+            </div>
+            <div>
                 <label class="block text-xs text-gray-500 font-medium mb-1">Siswa</label>
                 <select name="id_siswa" class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none">
                     <option value="">Semua</option>

@@ -122,6 +122,14 @@ class PelanggaranController extends Controller
                           WHERE p.id_siswa = siswa.id) as total_poin')
             ->with(['pelanggaran.jenis', 'suratTeguran']);
 
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('nama_siswa', 'like', "%{$s}%")
+                  ->orWhere('nisn', 'like', "%{$s}%");
+            });
+        }
+
         if ($request->filled('id_siswa')) {
             $query->where('siswa.id', $request->id_siswa);
         }
