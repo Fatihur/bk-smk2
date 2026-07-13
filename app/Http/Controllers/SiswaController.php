@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Siswa;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SiswaController extends Controller
 {
@@ -74,34 +74,55 @@ class SiswaController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,csv',
+            'file' => 'required|mimes:xls,xlsx,csv',
         ]);
 
-        $rows = Excel::toCollection(null, $request->file('file'))->first();
+        $spreadsheet = IOFactory::load($request->file('file')->getRealPath());
+        $sheet = $spreadsheet->getActiveSheet();
+        $highestRow = $sheet->getHighestRow();
         $imported = 0;
         $skipped = 0;
 
-        foreach ($rows as $row) {
-            $nisn = $row[0] ?? null;
-            $namaSiswa = $row[1] ?? null;
-            $rombel = $row[2] ?? null;
-
-            if (!$nisn || !$namaSiswa || !$rombel) {
-                $skipped++;
-                continue;
-            }
-
+        for ($r = 7; $r <= $highestRow; $r++) {
+            $rombel = trim($sheet->getCell('AQ' . $r)->getValue() ?? '');
             if (!in_array($rombel, ['X KJJ', 'XI KJJ', 'XII KJJ'])) {
                 $skipped++;
                 continue;
             }
 
+            $nisn = trim($sheet->getCell('E' . $r)->getValue() ?? '');
+            $namaSiswa = trim($sheet->getCell('B' . $r)->getValue() ?? '');
+
+            if (!$nisn || !$namaSiswa) {
+                $skipped++;
+                continue;
+            }
+
+            $tglLahir = trim($sheet->getCell('G' . $r)->getValue() ?? '');
+            if (!$tglLahir || $tglLahir === '0000-00-00') {
+                $tglLahir = null;
+            }
+
             Siswa::updateOrCreate(
                 ['nisn' => $nisn],
-                ['nama_siswa' => $namaSiswa, 'rombel' => $rombel]
+                [
+                    'nama_siswa' => $namaSiswa,
+                    'jk' => trim($sheet->getCell('D' . $r)->getValue() ?? ''),
+                    'tempat_lahir' => trim($sheet->getCell('F' . $r)->getValue() ?? ''),
+                    'tgl_lahir' => $tglLahir,
+                    'nik' => trim($sheet->getCell('H' . $r)->getValue() ?? ''),
+                    'agama' => trim($sheet->getCell('I' . $r)->getValue() ?? ''),
+                    'alamat' => trim($sheet->getCell('J' . $r)->getValue() ?? ''),
+                    'hp' => trim($sheet->getCell('T' . $r)->getValue() ?? ''),
+                    'ayah' => trim($sheet->getCell('Y' . $r)->getValue() ?? ''),
+                    'ibu' => trim($sheet->getCell('AE' . $r)->getValue() ?? ''),
+                    'rombel' => $rombel,
+                ]
             );
             $imported++;
         }
+
+        $spreadsheet->disconnectWorksheets();
 
         return response()->json([
             'message' => "Import selesai: $imported berhasil, $skipped dilewati",

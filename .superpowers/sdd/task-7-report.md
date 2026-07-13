@@ -1,14 +1,20 @@
-STATUS: DONE
-COMMITS: (none — no new commits)
-CHECKLIST:
-1. migrate:fresh --seed: PASS — all 15 migrations ran clean, seeder created 2 users + 3 pengaturan_poin + 8 jenis_pelanggaran
-2. route:list: PASS — all 48 routes present (dashboard, data-kelas, data-siswa, data-orang-tua, jenis-pelanggaran, pengaturan-poin, pelanggaran/input, pelanggaran, surat-teguran, laporan, laporan/cetak, api/dashboard/stats, auth routes, whatsapp webhook)
-3. Guru BK user: PASS — Guru BK - guru_bk
-4. Kepsek user: PASS — Kepala Sekolah - kepala_sekolah
-5. Test data creation: PASS — Kelas, Siswa, OrangTua, JenisPelanggaran all created successfully
-6. Surat teguran generation: PASS — logic correctly checks totalPoin >= batas_poin threshold (SP1=25). Created 2 pelanggaran (10+25=35 poin), then cekDanTerbitkanTeguran generated SP1 surat teguran
-7. PDF generation: PASS — file created at storage/app/public/teguran/teguran_sp1_1_20260711.pdf
-8. npm run build: PASS — vite build completed in 784ms (manifest, CSS 63KB, JS 45KB)
-9. php artisan optimize: PASS — config, events, routes, views all cached successfully
-ISSUES:
-- The test script in the prompt creates a violation using JenisPelanggaran::first() (5 poin from seeder "Terlambat masuk sekolah"), which is below the SP1 threshold of 25, so no teguran is generated from that single call — this is correct system behavior, not a bug. The teguran generation was verified separately by accumulating 35 poin and running cekDanTerbitkanTeguran, which produced the PDF and DB record correctly.
+# Task 7: Update Remaining Views
+
+**Status:** DONE
+
+## Changes Made
+
+| File | Changes |
+|------|---------|
+| `resources/views/pelanggaran/index.blade.php` | `$s->nama` → `$s->nama_siswa`, column "Kelas" → "Rombel", `$p->siswa->kelas->tingkat + nama_kelas` → `$p->siswa->rombel` |
+| `resources/views/laporan/index.blade.php` | `$s->nama` → `$s->nama_siswa`, `$s->kelas->nama_kelas` → `$s->rombel` |
+| `resources/views/pdf/laporan.blade.php` | `$siswa->nama` → `$siswa->nama_siswa`, `$siswa->kelas->nama_kelas` → `$siswa->rombel`, column "Kelas" → "Rombel", `$p->siswa->nama` → `$p->siswa->nama_siswa`, `$p->siswa->kelas->nama_kelas` → `$p->siswa->rombel` |
+| `resources/views/pdf/surat-teguran.blade.php` | `$siswa->nama` → `$siswa->nama_siswa`, `$siswa->kelas->tingkat + nama_kelas` → `$siswa->rombel` |
+
+## Commit
+
+`610a25e` - feat: update remaining views - replace kelas with rombel
+
+## Concerns
+
+- `pdf/laporan.blade.php:59` removed the `?? '-'` null fallback since `rombel` is a direct column (no intermediate relation).
