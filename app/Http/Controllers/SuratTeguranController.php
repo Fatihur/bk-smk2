@@ -3,20 +3,31 @@ namespace App\Http\Controllers;
 
 use App\Models\SuratTeguran;
 use App\Jobs\KirimWaTeguran;
+use Illuminate\Support\Facades\Storage;
 
 class SuratTeguranController extends Controller
 {
-    public function index()
+    public function show(SuratTeguran $suratTeguran)
     {
-        $teguran = SuratTeguran::with('siswa')
-            ->orderBy('tanggal_terbit', 'desc')
-            ->paginate(50);
-
-        return view('surat-teguran.index', compact('teguran'));
+        $path = 'public/teguran/' . $suratTeguran->file_pdf;
+        if (!Storage::exists($path)) {
+            abort(404, 'File PDF tidak ditemukan');
+        }
+        return response()->file(Storage::path($path), [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $suratTeguran->file_pdf . '"',
+        ]);
     }
 
     public function kirimWa(SuratTeguran $suratTeguran)
     {
+        if ($suratTeguran->status_terkirim) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Surat teguran ini sudah pernah dikirim.',
+            ], 422);
+        }
+
         $siswa = $suratTeguran->siswa;
 
         if (!$siswa->no_wali) {

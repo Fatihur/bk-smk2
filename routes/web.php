@@ -17,7 +17,6 @@ Route::get('/', function () {
 Route::middleware(['auth', 'role:guru_bk,kepala_sekolah'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/pelanggaran', [PelanggaranController::class, 'riwayat'])->name('pelanggaran.riwayat');
-    Route::get('/surat-teguran', [SuratTeguranController::class, 'index'])->name('teguran.index');
     Route::get('/surat-teguran/{suratTeguran}', [SuratTeguranController::class, 'show'])->name('teguran.show');
 
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');

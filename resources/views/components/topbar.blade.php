@@ -19,7 +19,6 @@
         ],
         'Dokumen' => [
             'children' => [
-                ['label' => 'Surat Teguran', 'icon' => 'bell', 'url' => '/surat-teguran'],
                 ['label' => 'Laporan', 'icon' => 'download', 'url' => '/laporan'],
             ],
         ],
@@ -30,7 +29,7 @@
         ],
     ];
 
-    $kepsekOnly = ['/data-siswa', '/jenis-pelanggaran', '/pengaturan-poin', '/pelanggaran/input', '/surat-teguran', '/pengaturan-whatsapp'];
+    $kepsekOnly = ['/data-siswa', '/jenis-pelanggaran', '/pengaturan-poin', '/pelanggaran/input', '/pengaturan-whatsapp'];
     if ($role === 'kepala_sekolah') {
         foreach ($groups as $key => $g) {
             if ($key === 'dashboard') continue;
