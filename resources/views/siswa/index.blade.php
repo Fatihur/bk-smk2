@@ -15,43 +15,77 @@
     </div>
 
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-        <table class="w-full text-sm">
+        <table id="siswaTable" class="w-full text-sm">
             <thead>
                 <tr class="text-gray-500 text-xs uppercase tracking-wider bg-gray-50">
-                    <th class="text-left px-5 py-3 font-medium">NISN</th>
-                    <th class="text-left px-5 py-3 font-medium">Nama</th>
-                    <th class="text-left px-5 py-3 font-medium">JK</th>
-                    <th class="text-left px-5 py-3 font-medium">Rombel</th>
-                    <th class="text-left px-5 py-3 font-medium">No. Wali</th>
-                    <th class="text-right px-5 py-3 font-medium">Aksi</th>
+                    <th>NISN</th>
+                    <th>Nama</th>
+                    <th>JK</th>
+                    <th>Rombel</th>
+                    <th>No. Wali</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
-            <tbody id="siswa-table-body">
-                @forelse ($siswa as $s)
-                <tr class="border-t border-gray-100 hover:bg-gray-50" data-id="{{ $s->id }}">
-                    <td class="px-5 py-3.5 text-gray-900">{{ $s->nisn }}</td>
-                    <td class="px-5 py-3.5 text-gray-900">{{ $s->nama_siswa }}</td>
-                    <td class="px-5 py-3.5">{{ $s->jk }}</td>
-                    <td class="px-5 py-3.5 text-gray-500">{{ $s->rombel }}</td>
-                    <td class="px-5 py-3.5">
+            <tbody>
+                @foreach ($siswa as $s)
+                <tr>
+                    <td>{{ $s->nisn }}</td>
+                    <td class="font-medium text-gray-900">{{ $s->nama_siswa }}</td>
+                    <td>{{ $s->jk }}</td>
+                    <td>{{ $s->rombel }}</td>
+                    <td>
                         @if ($s->no_wali)
                             <span class="text-green-600 font-medium">{{ $s->no_wali }}</span>
                         @else
                             <span class="text-red-400 italic">Belum diisi</span>
                         @endif
                     </td>
-                    <td class="px-5 py-3.5 text-right">
-                        <button onclick="editSiswa({{ $s->id }})" class="text-purple-600 hover:text-purple-700 font-medium mr-4 text-sm">Edit</button>
-                        <button onclick="hapusSiswa({{ $s->id }})" class="text-red-600 hover:text-red-700 text-sm font-medium">Hapus</button>
+                    <td>
+                        <div class="flex items-center justify-end gap-3">
+                            <button onclick="detailSiswa({{ $s->id }})" class="p-1.5 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Detail">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </button>
+                            <button onclick="editSiswa({{ $s->id }})" class="p-1.5 rounded-lg text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition-colors" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
+                            </button>
+                            <button onclick="hapusSiswa({{ $s->id }})" class="p-1.5 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors" title="Hapus">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                            </button>
+                        </div>
                     </td>
                 </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="text-center py-8 text-gray-500">Belum ada data siswa</td>
-                </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
+    </div>
+</div>
+
+<div id="detailModal" class="fixed inset-0 z-50 hidden bg-gray-900/50 backdrop-blur-sm flex items-center justify-center">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 w-full max-w-lg mx-4 shadow-xl">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">Detail Siswa</h2>
+            <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div id="detailContent" class="space-y-3 text-sm">
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">NISN</span><span class="col-span-2 font-medium" id="d-nisn"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Nama</span><span class="col-span-2 font-medium" id="d-nama"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">JK</span><span class="col-span-2" id="d-jk"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Tempat Lahir</span><span class="col-span-2" id="d-tempat-lahir"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Tanggal Lahir</span><span class="col-span-2" id="d-tgl-lahir"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">NIK</span><span class="col-span-2 font-mono" id="d-nik"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Agama</span><span class="col-span-2" id="d-agama"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Alamat</span><span class="col-span-2" id="d-alamat"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">HP</span><span class="col-span-2" id="d-hp"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Ayah</span><span class="col-span-2" id="d-ayah"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Ibu</span><span class="col-span-2" id="d-ibu"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">No. Wali</span><span class="col-span-2 font-mono" id="d-no-wali"></span></div>
+            <div class="grid grid-cols-3 gap-2 py-2"><span class="text-gray-500">Rombel</span><span class="col-span-2 font-medium text-purple-700" id="d-rombel"></span></div>
+        </div>
+        <div class="flex justify-end mt-4">
+            <button onclick="closeDetailModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors">Tutup</button>
+        </div>
     </div>
 </div>
 
@@ -151,6 +185,24 @@
 
 @push('scripts')
 <script>
+$(document).ready(function() {
+    $('#siswaTable').DataTable({
+        language: {
+            search: 'Cari:',
+            lengthMenu: 'Tampilkan _MENU_ data',
+            info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ data',
+            infoEmpty: 'Tidak ada data',
+            infoFiltered: '(disaring dari _MAX_ total data)',
+            zeroRecords: 'Data tidak ditemukan',
+            paginate: { first: 'Awal', last: 'Akhir', next: '→', previous: '←' },
+        },
+        columnDefs: [
+            { targets: 5, orderable: false },
+        ],
+    });
+});
+
+const detailModal = document.getElementById('detailModal');
 const siswaModal = document.getElementById('siswaModal');
 const importModal = document.getElementById('importModal');
 const siswaForm = document.getElementById('siswaForm');
@@ -170,6 +222,32 @@ const hp = document.getElementById('hp');
 const ayah = document.getElementById('ayah');
 const ibu = document.getElementById('ibu');
 const noWali = document.getElementById('no_wali');
+
+function detailSiswa(id) {
+    fetch(`/data-siswa/${id}/edit`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('d-nisn').textContent = data.nisn;
+            document.getElementById('d-nama').textContent = data.nama_siswa;
+            document.getElementById('d-jk').textContent = data.jk === 'L' ? 'Laki-laki' : 'Perempuan';
+            document.getElementById('d-tempat-lahir').textContent = data.tempat_lahir || '-';
+            document.getElementById('d-tgl-lahir').textContent = data.tgl_lahir || '-';
+            document.getElementById('d-nik').textContent = data.nik || '-';
+            document.getElementById('d-agama').textContent = data.agama || '-';
+            document.getElementById('d-alamat').textContent = data.alamat || '-';
+            document.getElementById('d-hp').textContent = data.hp || '-';
+            document.getElementById('d-ayah').textContent = data.ayah || '-';
+            document.getElementById('d-ibu').textContent = data.ibu || '-';
+            document.getElementById('d-no-wali').textContent = data.no_wali || '-';
+            document.getElementById('d-rombel').textContent = data.rombel;
+            detailModal.classList.remove('hidden');
+        })
+        .catch(() => alert('Gagal memuat data'));
+}
+
+function closeDetailModal() {
+    detailModal.classList.add('hidden');
+}
 
 function openModal(data = null) {
     siswaModalTitle.textContent = data ? 'Edit Siswa' : 'Tambah Siswa';
@@ -257,17 +335,13 @@ importForm.addEventListener('submit', function(e) {
 function editSiswa(id) {
     fetch(`/data-siswa/${id}/edit`)
         .then(res => res.json())
-        .then(data => {
-            openModal(data);
-        })
+        .then(data => openModal(data))
         .catch(() => {
-            // fallback: get from table row
             const row = document.querySelector(`tr[data-id="${id}"]`);
             if (row) {
                 const cells = row.querySelectorAll('td');
                 openModal({
-                    id: id,
-                    nisn: cells[0].textContent.trim(),
+                    id, nisn: cells[0].textContent.trim(),
                     nama_siswa: cells[1].textContent.trim(),
                     jk: cells[2].textContent.trim(),
                     rombel: cells[3].textContent.trim(),
