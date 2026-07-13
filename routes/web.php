@@ -2,9 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisPelanggaranController;
-use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\OrangTuaController;
 use App\Http\Controllers\PelanggaranController;
 use App\Http\Controllers\PengaturanPoinController;
 use App\Http\Controllers\SiswaController;
@@ -27,21 +25,11 @@ Route::middleware(['auth', 'role:guru_bk,kepala_sekolah'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:guru_bk'])->group(function () {
-    Route::get('/data-kelas', [KelasController::class, 'index']);
-    Route::post('/data-kelas', [KelasController::class, 'store']);
-    Route::put('/data-kelas/{kelas}', [KelasController::class, 'update']);
-    Route::delete('/data-kelas/{kelas}', [KelasController::class, 'destroy']);
-
     Route::get('/data-siswa', [SiswaController::class, 'index']);
     Route::post('/data-siswa', [SiswaController::class, 'store']);
     Route::post('/data-siswa/import', [SiswaController::class, 'import']);
     Route::put('/data-siswa/{siswa}', [SiswaController::class, 'update']);
     Route::delete('/data-siswa/{siswa}', [SiswaController::class, 'destroy']);
-
-    Route::get('/data-orang-tua', [OrangTuaController::class, 'index']);
-    Route::post('/data-orang-tua', [OrangTuaController::class, 'store']);
-    Route::put('/data-orang-tua/{orangTua}', [OrangTuaController::class, 'update']);
-    Route::delete('/data-orang-tua/{orangTua}', [OrangTuaController::class, 'destroy']);
 
     Route::get('/jenis-pelanggaran', [JenisPelanggaranController::class, 'index'])->name('jenis-pelanggaran.index');
     Route::post('/jenis-pelanggaran', [JenisPelanggaranController::class, 'store']);
@@ -55,7 +43,6 @@ Route::middleware(['auth', 'role:guru_bk'])->group(function () {
     Route::post('/pelanggaran', [PelanggaranController::class, 'store']);
 
     Route::get('/select2/siswa', [Select2Controller::class, 'siswa'])->name('select2.siswa');
-    Route::get('/select2/jenis', [Select2Controller::class, 'jenis'])->name('select2.jenis');
 
     Route::get('/pengaturan-whatsapp', [WhatsappSettingController::class, 'index'])->name('whatsapp.settings');
 
@@ -66,6 +53,8 @@ Route::middleware(['auth', 'role:guru_bk'])->group(function () {
         Route::post('/destroy', [WhatsappSettingController::class, 'destroy']);
         Route::get('/logs', [WhatsappSettingController::class, 'logs']);
     });
+
+    Route::post('/surat-teguran/{suratTeguran}/kirim-wa', [SuratTeguranController::class, 'kirimWa'])->name('teguran.kirim-wa');
 });
 
 require __DIR__.'/auth.php';
