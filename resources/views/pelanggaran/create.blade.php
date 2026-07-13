@@ -13,7 +13,6 @@
             <div class="mb-5">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Siswa</label>
                 <div id="selectedSiswa" class="flex flex-wrap gap-2 mb-2 min-h-[32px]">
-                    <span class="text-sm text-gray-400" id="siswaPlaceholder">Belum ada siswa dipilih</span>
                 </div>
                 <button type="button" onclick="openSiswaModal()"
                     class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors">
@@ -24,7 +23,6 @@
             <div class="mb-5">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Pelanggaran</label>
                 <div id="selectedJenis" class="mb-2 min-h-[32px]">
-                    <span class="text-sm text-gray-400" id="jenisPlaceholder">Belum dipilih</span>
                 </div>
                 <button type="button" onclick="openJenisModal()"
                     class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors">
@@ -164,7 +162,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 keterangan: document.getElementById('keterangan').value,
             }),
         })
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error('Server error');
+            return res.json();
+        })
         .then(data => {
             window.toast(data.message, 'success');
             resetForm();
@@ -211,10 +212,9 @@ function confirmSiswa() {
 
 function renderSiswaChips() {
     const container = document.getElementById('selectedSiswa');
-    const placeholder = document.getElementById('siswaPlaceholder');
     container.innerHTML = '';
     if (selectedSiswa.length === 0) {
-        container.appendChild(placeholder);
+        container.innerHTML = '<span class="text-sm text-gray-400">Belum ada siswa dipilih</span>';
         return;
     }
     selectedSiswa.forEach((s, i) => {
@@ -256,10 +256,9 @@ function confirmJenis() {
 
 function renderJenisChip() {
     const container = document.getElementById('selectedJenis');
-    const placeholder = document.getElementById('jenisPlaceholder');
     container.innerHTML = '';
     if (!selectedJenis) {
-        container.appendChild(placeholder);
+        container.innerHTML = '<span class="text-sm text-gray-400">Belum dipilih</span>';
         return;
     }
     const chip = document.createElement('span');
