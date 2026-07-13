@@ -68,20 +68,20 @@
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
-        <div id="detailContent" class="space-y-3 text-sm max-h-[70vh] overflow-y-auto pr-1">
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">NISN</span><span class="col-span-2 font-medium" id="d-nisn"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Nama</span><span class="col-span-2 font-medium" id="d-nama"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">JK</span><span class="col-span-2" id="d-jk"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Tempat Lahir</span><span class="col-span-2" id="d-tempat-lahir"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Tanggal Lahir</span><span class="col-span-2" id="d-tgl-lahir"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">NIK</span><span class="col-span-2 font-mono" id="d-nik"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Agama</span><span class="col-span-2" id="d-agama"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Alamat</span><span class="col-span-2" id="d-alamat"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">HP</span><span class="col-span-2" id="d-hp"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Ayah</span><span class="col-span-2" id="d-ayah"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">Ibu</span><span class="col-span-2" id="d-ibu"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2 border-b border-gray-100"><span class="text-gray-500">No. Wali</span><span class="col-span-2 font-mono" id="d-no-wali"></span></div>
-            <div class="grid grid-cols-3 gap-2 py-2"><span class="text-gray-500">Rombel</span><span class="col-span-2 font-medium text-purple-700" id="d-rombel"></span></div>
+        <div id="detailContent" class="grid grid-cols-2 gap-x-6 gap-y-0 text-sm">
+            <div><div class="py-2.5 border-b border-gray-100"><span class="text-gray-500 text-xs">NISN</span><p class="font-medium mt-0.5" id="d-nisn"></p></div></div>
+            <div><div class="py-2.5 border-b border-gray-100"><span class="text-gray-500 text-xs">Nama</span><p class="font-medium mt-0.5" id="d-nama"></p></div></div>
+            <div><div class="py-2.5 border-b border-gray-100"><span class="text-gray-500 text-xs">JK</span><p class="mt-0.5" id="d-jk"></p></div></div>
+            <div><div class="py-2.5 border-b border-gray-100"><span class="text-gray-500 text-xs">Rombel</span><p class="font-medium text-purple-700 mt-0.5" id="d-rombel"></p></div></div>
+            <div><div class="py-2.5 border-b border-gray-100"><span class="text-gray-500 text-xs">Tempat Lahir</span><p class="mt-0.5" id="d-tempat-lahir"></p></div></div>
+            <div><div class="py-2.5 border-b border-gray-100"><span class="text-gray-500 text-xs">Tanggal Lahir</span><p class="mt-0.5" id="d-tgl-lahir"></p></div></div>
+            <div><div class="py-2.5 border-b border-gray-100"><span class="text-gray-500 text-xs">NIK</span><p class="font-mono mt-0.5" id="d-nik"></p></div></div>
+            <div><div class="py-2.5 border-b border-gray-100"><span class="text-gray-500 text-xs">Agama</span><p class="mt-0.5" id="d-agama"></p></div></div>
+            <div class="col-span-2"><div class="py-2.5 border-b border-gray-100"><span class="text-gray-500 text-xs">Alamat</span><p class="mt-0.5" id="d-alamat"></p></div></div>
+            <div><div class="py-2.5 border-b border-gray-100"><span class="text-gray-500 text-xs">HP</span><p class="mt-0.5" id="d-hp"></p></div></div>
+            <div><div class="py-2.5"><span class="text-gray-500 text-xs">No. Wali</span><p class="font-mono mt-0.5" id="d-no-wali"></p></div></div>
+            <div><div class="py-2.5"><span class="text-gray-500 text-xs">Ayah</span><p class="mt-0.5" id="d-ayah"></p></div></div>
+            <div><div class="py-2.5"><span class="text-gray-500 text-xs">Ibu</span><p class="mt-0.5" id="d-ibu"></p></div></div>
         </div>
         <div class="flex justify-end mt-4">
             <button onclick="closeDetailModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors">Tutup</button>
