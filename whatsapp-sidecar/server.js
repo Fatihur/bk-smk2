@@ -89,6 +89,13 @@ app.get('/start', (req, res) => {
   res.json({ success: true, status: state.status, qr: state.qr });
 });
 
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('TIMEOUT')), ms)),
+  ]);
+}
+
 app.post('/send-text', async (req, res) => {
   const { target, message } = req.body;
   if (!target || !message) return res.status(400).json({ success: false, reason: 'target and message required' });
@@ -96,10 +103,10 @@ app.post('/send-text', async (req, res) => {
 
   try {
     const jid = target.includes('@s.whatsapp.net') ? target : `${target}@s.whatsapp.net`;
-    await sock.sendMessage(jid, { text: message });
+    await withTimeout(sock.sendMessage(jid, { text: message }), 15000);
     res.json({ success: true });
   } catch (e) {
-    res.status(500).json({ success: false, reason: e.message });
+    res.status(500).json({ success: false, reason: e.message === 'TIMEOUT' ? 'send timed out' : e.message });
   }
 });
 
@@ -114,16 +121,16 @@ app.post('/send-document', async (req, res) => {
     const data = readFileSync(filePath);
     const jid = target.includes('@s.whatsapp.net') ? target : `${target}@s.whatsapp.net`;
 
-    await sock.sendMessage(jid, {
+    await withTimeout(sock.sendMessage(jid, {
       document: data,
       fileName: filename || 'document.pdf',
       mimetype: 'application/pdf',
       caption: caption || '',
-    });
+    }), 15000);
 
     res.json({ success: true });
   } catch (e) {
-    res.status(500).json({ success: false, reason: e.message });
+    res.status(500).json({ success: false, reason: e.message === 'TIMEOUT' ? 'send timed out' : e.message });
   }
 });
 
