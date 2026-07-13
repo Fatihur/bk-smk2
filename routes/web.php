@@ -6,7 +6,6 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PelanggaranController;
 use App\Http\Controllers\PengaturanPoinController;
 use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\Select2Controller;
 use App\Http\Controllers\SuratTeguranController;
 use App\Http\Controllers\WhatsappSettingController;
 use Illuminate\Support\Facades\Route;
@@ -43,9 +42,7 @@ Route::middleware(['auth', 'role:guru_bk'])->group(function () {
 
     Route::get('/pelanggaran/input', [PelanggaranController::class, 'index'])->name('pelanggaran.input');
     Route::post('/pelanggaran', [PelanggaranController::class, 'store']);
-
-    Route::get('/select2/siswa', [Select2Controller::class, 'siswa'])->name('select2.siswa');
-    Route::get('/select2/jenis', [Select2Controller::class, 'jenis'])->name('select2.jenis');
+    Route::post('/pelanggaran/bulk', [PelanggaranController::class, 'bulkStore']);
 
     Route::get('/pengaturan-whatsapp', [WhatsappSettingController::class, 'index'])->name('whatsapp.settings');
 

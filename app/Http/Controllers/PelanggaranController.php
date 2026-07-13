@@ -27,6 +27,33 @@ class PelanggaranController extends Controller
         return response()->json(['message' => 'Pelanggaran berhasil dicatat', 'data' => $pelanggaran]);
     }
 
+    public function bulkStore(Request $request)
+    {
+        $validated = $request->validate([
+            'id_siswa' => 'required|array|min:1',
+            'id_siswa.*' => 'exists:siswa,id',
+            'id_jenis' => 'required|exists:jenis_pelanggaran,id',
+            'tanggal' => 'required|date',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        $data = [];
+        foreach ($validated['id_siswa'] as $id) {
+            $data[] = [
+                'id_siswa' => $id,
+                'id_jenis' => $validated['id_jenis'],
+                'tanggal' => $validated['tanggal'],
+                'keterangan' => $validated['keterangan'],
+            ];
+        }
+
+        Pelanggaran::insert($data);
+
+        return response()->json([
+            'message' => count($data) . ' pelanggaran berhasil dicatat',
+        ]);
+    }
+
     public function riwayat(Request $request)
     {
         $query = Pelanggaran::with(['siswa', 'jenis']);
