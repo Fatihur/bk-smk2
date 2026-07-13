@@ -2,9 +2,7 @@
     <div class="w-full max-w-md">
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
             <div class="text-center mb-8">
-                <div class="w-12 h-12 bg-gradient-to-br from-purple-600 to-purple-400 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <span class="text-white text-lg font-bold">S2</span>
-                </div>
+                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="h-16 w-auto mx-auto mb-4">
                 <h2 class="text-2xl font-bold text-gray-900">SMKN 2 Sumbawa</h2>
                 <p class="text-sm text-gray-500 mt-1">Sistem Monitoring Kedisiplinan</p>
             </div>

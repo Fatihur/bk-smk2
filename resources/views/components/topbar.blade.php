@@ -43,9 +43,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-gradient-to-br from-purple-600 to-purple-400 rounded-lg flex items-center justify-center">
-                    <span class="text-white text-xs font-bold">S2</span>
-                </div>
+                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="h-8 w-auto">
                 <span class="font-semibold text-gray-900">SMKN 2 Sumbawa</span>
             </div>
             <div class="hidden md:flex items-center gap-1">

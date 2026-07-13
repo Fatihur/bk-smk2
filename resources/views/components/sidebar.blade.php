@@ -22,9 +22,12 @@
 @endphp
 
 <aside class="w-64 min-h-screen bg-[#0c0c0f] border-r border-[#1c1c22] flex flex-col">
-    <div class="p-5 border-b border-[#1c1c22]">
-        <h1 class="text-[#fafafa] text-lg font-semibold tracking-tight">SMKN 2 Sumbawa</h1>
-        <p class="text-[#71717a] text-xs mt-0.5">Sistem Disiplin Siswa</p>
+    <div class="p-5 border-b border-[#1c1c22] flex items-center gap-3">
+        <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="h-9 w-auto rounded">
+        <div>
+            <h1 class="text-[#fafafa] text-lg font-semibold tracking-tight">SMKN 2 Sumbawa</h1>
+            <p class="text-[#71717a] text-xs mt-0.5">Sistem Disiplin Siswa</p>
+        </div>
     </div>
 
     <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
