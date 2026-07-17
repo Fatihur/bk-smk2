@@ -14,6 +14,8 @@ Route::get('/', function () {
     return redirect('/dashboard');
 });
 
+Route::get('/api/whatsapp/status', [WhatsappSettingController::class, 'status'])->name('whatsapp.status');
+
 Route::middleware(['auth', 'role:guru_bk,kepala_sekolah'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/pelanggaran', [PelanggaranController::class, 'riwayat'])->name('pelanggaran.riwayat');
@@ -45,7 +47,6 @@ Route::middleware(['auth', 'role:guru_bk'])->group(function () {
     Route::post('/pelanggaran/bulk', [PelanggaranController::class, 'bulkStore']);
 
     Route::get('/pengaturan-whatsapp', [WhatsappSettingController::class, 'index'])->name('whatsapp.settings');
-    Route::get('/api/whatsapp/status', [WhatsappSettingController::class, 'status'])->name('whatsapp.status');
     Route::get('/api/whatsapp/start', [WhatsappSettingController::class, 'start'])->name('whatsapp.start');
     Route::post('/pengaturan-whatsapp/test-send', [WhatsappSettingController::class, 'testSend'])->name('whatsapp.test-send');
     Route::post('/pengaturan-whatsapp/logout', [WhatsappSettingController::class, 'logout'])->name('whatsapp.logout');
