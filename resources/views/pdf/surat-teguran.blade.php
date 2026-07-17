@@ -6,7 +6,7 @@
     <style>
         body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.4; color: #000; margin: 0; padding: 25px 30px; }
         .header { display: flex; align-items: center; margin-bottom: 5px; }
-        .header .logo { width: 90px; height: auto; margin-right: 12px; margin-top: 15px; }
+        .header .logo { width: 90px; height: auto; margin-right: 12px; margin-top: 25px; }
         .header .text { flex: 1; text-align: center; }
         .header .text h1 { font-size: 11pt; font-weight: normal; margin: 0; text-transform: uppercase; }
         .header .text h2 { font-size: 11pt; font-weight: normal; margin: 0; text-transform: uppercase; }
