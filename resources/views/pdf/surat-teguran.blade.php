@@ -4,21 +4,21 @@
     <meta charset="utf-8">
     <title>Surat Teguran {{ $tingkat }}</title>
     <style>
-        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; color: #000; margin: 0; padding: 40px; }
-        .header { display: flex; align-items: center; margin-bottom: 10px; }
-        .header .logo { width: 100px; height: auto; margin-right: 15px; }
+        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.4; color: #000; margin: 0; padding: 25px 30px; }
+        .header { display: flex; align-items: center; margin-bottom: 5px; }
+        .header .logo { width: 90px; height: auto; margin-right: 12px; }
         .header .text { flex: 1; text-align: center; }
-        .header .text h1 { font-size: 12pt; font-weight: normal; margin: 0; text-transform: uppercase; }
-        .header .text h2 { font-size: 12pt; font-weight: normal; margin: 0; text-transform: uppercase; }
-        .header .text h3 { font-size: 14pt; font-weight: bold; margin: 2px 0; text-transform: uppercase; }
-        .header .text p { font-size: 10pt; margin: 1px 0; }
-        .garis { border-top: 2px solid #000; border-bottom: 1px solid #000; height: 3px; margin: 10px 0 20px; }
-        .title { text-align: center; font-size: 14pt; font-weight: bold; text-decoration: underline; margin-bottom: 20px; }
+        .header .text h1 { font-size: 11pt; font-weight: normal; margin: 0; text-transform: uppercase; }
+        .header .text h2 { font-size: 11pt; font-weight: normal; margin: 0; text-transform: uppercase; }
+        .header .text h3 { font-size: 13pt; font-weight: bold; margin: 2px 0; text-transform: uppercase; }
+        .header .text p { font-size: 9pt; margin: 1px 0; }
+        .garis { border-top: 2px solid #000; border-bottom: 1px solid #000; height: 3px; margin: 5px 0 12px; }
+        .title { text-align: center; font-size: 13pt; font-weight: bold; text-decoration: underline; margin-bottom: 12px; }
         .content { text-align: justify; }
-        .content p { margin: 10px 0; }
-        .signature { margin-top: 50px; text-align: right; }
-        .signature p { margin: 5px 0; }
-        .signature .space { margin-top: 80px; }
+        .content p { margin: 6px 0; }
+        .signature { margin-top: 25px; text-align: right; }
+        .signature p { margin: 3px 0; }
+        .signature .space { margin-top: 50px; }
     </style>
 </head>
 <body>
