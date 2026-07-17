@@ -5,15 +5,17 @@ use App\Models\SuratTeguran;
 use App\Jobs\KirimWaTeguran;
 use Illuminate\Support\Facades\Storage;
 
+
+
 class SuratTeguranController extends Controller
 {
     public function show(SuratTeguran $suratTeguran)
     {
-        $path = 'public/teguran/' . $suratTeguran->file_pdf;
-        if (!Storage::exists($path)) {
+        $path = 'teguran/' . $suratTeguran->file_pdf;
+        if (!Storage::disk('public')->exists($path)) {
             abort(404, 'File PDF tidak ditemukan');
         }
-        return response()->file(Storage::path($path), [
+        return response()->file(Storage::disk('public')->path($path), [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="' . $suratTeguran->file_pdf . '"',
         ]);

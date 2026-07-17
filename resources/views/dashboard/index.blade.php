@@ -78,18 +78,18 @@
             .then(res => res.json())
             .then(data => {
                 document.getElementById('stat-total-siswa').textContent = data.total_siswa ?? '-';
-                document.getElementById('stat-pelanggaran-bulan').textContent = data.pelanggaran_bulan_ini ?? '-';
-                document.getElementById('stat-surat-teguran').textContent = data.surat_teguran_terbit ?? '-';
+                document.getElementById('stat-pelanggaran-bulan').textContent = data.total_pelanggaran ?? '-';
+                document.getElementById('stat-surat-teguran').textContent = data.total_teguran ?? '-';
                 document.getElementById('stat-poin-tertinggi').textContent = data.poin_tertinggi ?? '-';
 
                 const tbody = document.getElementById('recent-violations');
-                if (data.recent_violations && data.recent_violations.length) {
-                    tbody.innerHTML = data.recent_violations.map(v => `
+                if (data.terbaru && data.terbaru.length) {
+                    tbody.innerHTML = data.terbaru.map(v => `
                         <tr class="border-t border-gray-100 hover:bg-gray-50">
                             <td class="px-5 py-3.5 text-gray-900">${v.siswa}</td>
                             <td class="px-5 py-3.5 text-gray-500">${v.kelas}</td>
-                            <td class="px-5 py-3.5 text-gray-500">${v.pelanggaran}</td>
-                            <td class="px-5 py-3.5 text-gray-500">${v.poin}</td>
+                            <td class="px-5 py-3.5 text-gray-500">${v.jenis}</td>
+                            <td class="px-5 py-3.5 text-gray-500">-</td>
                             <td class="px-5 py-3.5 text-gray-500">${v.tanggal}</td>
                         </tr>
                     `).join('');

@@ -20,8 +20,11 @@ class PengaturanPoinController extends Controller
             'batas.*' => 'required|integer|min:1',
         ]);
 
+        $existingIds = PengaturanPoin::pluck('id')->toArray();
         foreach ($validated['batas'] as $id => $value) {
-            PengaturanPoin::where('id', $id)->update(['batas_poin' => $value]);
+            if (in_array($id, $existingIds)) {
+                PengaturanPoin::where('id', $id)->update(['batas_poin' => $value]);
+            }
         }
 
         return redirect()->route('pengaturan-poin.index')->with('success', 'Pengaturan poin berhasil disimpan');

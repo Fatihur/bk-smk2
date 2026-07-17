@@ -25,10 +25,19 @@ class BaileysService
         return $res->json() ?? [];
     }
 
+    private function normalizeNumber(string $target): string
+    {
+        $digits = preg_replace('/\D/', '', $target);
+        if (str_starts_with($digits, '0')) {
+            $digits = '62' . substr($digits, 1);
+        }
+        return $digits;
+    }
+
     public function sendText(string $target, string $message): array
     {
         $res = Http::post($this->baseUrl . '/send-text', [
-            'target' => $target,
+            'target' => $this->normalizeNumber($target),
             'message' => $message,
         ]);
         return $res->json() ?? [];
@@ -37,7 +46,7 @@ class BaileysService
     public function sendDocument(string $target, string $filePath, string $filename, string $caption = ''): array
     {
         $res = Http::post($this->baseUrl . '/send-document', [
-            'target' => $target,
+            'target' => $this->normalizeNumber($target),
             'filePath' => $filePath,
             'filename' => $filename,
             'caption' => $caption,

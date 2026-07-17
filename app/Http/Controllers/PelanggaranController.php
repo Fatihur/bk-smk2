@@ -94,7 +94,7 @@ class PelanggaranController extends Controller
                 ]);
 
                 $filename = 'SP_' . $p->tingkat . '_' . $siswa->nisn . '_' . now()->format('Ymd') . '.pdf';
-                Storage::put('public/teguran/' . $filename, $pdf->output());
+                Storage::disk('public')->put('teguran/' . $filename, $pdf->output());
 
                 $surat = SuratTeguran::create([
                     'id_siswa' => $idSiswa,

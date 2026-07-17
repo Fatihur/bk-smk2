@@ -3,6 +3,7 @@ namespace App\Jobs;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Siswa;
 use App\Models\SuratTeguran;
 use App\Services\BaileysService;
@@ -46,13 +47,17 @@ class KirimWaTeguran implements ShouldQueue
             . "Wassalamu'alaikum Wr. Wb.\n"
             . "SMK Negeri 2 Sumbawa Besar";
 
-        $filePath = storage_path('app/public/teguran/' . $this->filename);
+        $filePath = Storage::disk('public')->path('teguran/' . $this->filename);
 
         try {
-            $wa->sendDocument($siswa->no_wali, $filePath, "Surat_Teguran_{$this->tingkat}.pdf", $pesan);
-            $wa->sendText($siswa->no_wali, $pesan);
+            $docResult = $wa->sendDocument($siswa->no_wali, $filePath, "Surat_Teguran_{$this->tingkat}.pdf", $pesan);
+            $textResult = $wa->sendText($siswa->no_wali, $pesan);
 
-            $surat->update(['status_terkirim' => true]);
+            if (($docResult['success'] ?? false) || ($textResult['success'] ?? false)) {
+                $surat->update(['status_terkirim' => true]);
+            } else {
+                \Log::error("WA send failed for {$siswa->no_wali}: doc=" . ($docResult['reason'] ?? '?') . ", text=" . ($textResult['reason'] ?? '?'));
+            }
         } catch (\Exception $e) {
             \Log::error("WA send failed for {$siswa->no_wali}: " . $e->getMessage());
         }

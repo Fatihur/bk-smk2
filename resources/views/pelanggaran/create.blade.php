@@ -7,6 +7,7 @@
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Input Pelanggaran</h1>
     </div>
+    <p class="text-sm text-gray-500 mb-4">Pilih satu atau lebih siswa dan satu atau lebih jenis pelanggaran. Setiap siswa akan dicatat untuk setiap pelanggaran yang dipilih. Contoh: 3 siswa × 2 pelanggaran = 6 catatan.</p>
 
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
         <form id="pelanggaranForm">

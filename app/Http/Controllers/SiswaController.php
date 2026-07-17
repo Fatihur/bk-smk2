@@ -119,6 +119,7 @@ class SiswaController extends Controller
                 $hp = trim($sheet->getCell('I' . $r)->getValue() ?? '');
                 $ayah = trim($sheet->getCell('J' . $r)->getValue() ?? '');
                 $ibu = trim($sheet->getCell('K' . $r)->getValue() ?? '');
+                $noWali = trim($sheet->getCell('M' . $r)->getValue() ?? '');
             } else {
                 // ponytail: column positions hardcoded for specific Dapodik export format.
                 // If import starts failing, re-map by inspecting the source Excel headers.
@@ -176,6 +177,7 @@ class SiswaController extends Controller
                     'hp' => $hp,
                     'ayah' => $ayah,
                     'ibu' => $ibu,
+                    'no_wali' => $noWali,
                     'rombel' => $rombel,
                 ]
             );
