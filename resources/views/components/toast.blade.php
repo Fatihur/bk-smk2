@@ -18,18 +18,18 @@ window.toast = function(message, type = 'success') {
     };
 
     const el = document.createElement('div');
-    el.className = `${colors[type] || colors.info} pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg text-sm font-medium transition-all duration-300 translate-x-full opacity-0`;
+    el.className = `${colors[type] || colors.info} pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg text-sm font-medium transition-all duration-300 opacity-0`;
     el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 shrink-0">${icons[type] || icons.info}</svg><span>${message}</span>`;
     container.appendChild(el);
 
     requestAnimationFrame(() => {
-        el.classList.remove('translate-x-full', 'opacity-0');
-        el.classList.add('translate-x-0', 'opacity-100');
+        el.classList.remove('opacity-0');
+        el.classList.add('opacity-100');
     });
 
     setTimeout(() => {
-        el.classList.remove('translate-x-0', 'opacity-100');
-        el.classList.add('translate-x-full', 'opacity-0');
+        el.classList.remove('opacity-100');
+        el.classList.add('opacity-0');
         setTimeout(() => el.remove(), 300);
     }, 3000);
 };
