@@ -5,10 +5,13 @@
     <title>Surat Teguran {{ $tingkat }}</title>
     <style>
         body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; color: #000; margin: 0; padding: 40px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-size: 18pt; font-weight: bold; margin: 0; text-transform: uppercase; }
-        .header h2 { font-size: 16pt; font-weight: bold; margin: 5px 0; text-transform: uppercase; }
-        .header p { font-size: 11pt; margin: 2px 0; }
+        .header { display: flex; align-items: center; margin-bottom: 10px; }
+        .header .logo { width: 100px; height: auto; margin-right: 15px; }
+        .header .text { flex: 1; text-align: center; }
+        .header .text h1 { font-size: 12pt; font-weight: normal; margin: 0; text-transform: uppercase; }
+        .header .text h2 { font-size: 12pt; font-weight: normal; margin: 0; text-transform: uppercase; }
+        .header .text h3 { font-size: 14pt; font-weight: bold; margin: 2px 0; text-transform: uppercase; }
+        .header .text p { font-size: 10pt; margin: 1px 0; }
         .garis { border-top: 2px solid #000; border-bottom: 1px solid #000; height: 3px; margin: 10px 0 20px; }
         .title { text-align: center; font-size: 14pt; font-weight: bold; text-decoration: underline; margin-bottom: 20px; }
         .content { text-align: justify; }
@@ -20,10 +23,15 @@
 </head>
 <body>
     <div class="header">
-        <h1>PEMERINTAH PROVINSI NUSA TENGGARA BARAT</h1>
-        <h2>SMK NEGERI 2 SUMBAWA BESAR</h2>
-        <p>Jalan Garuda No. 10, Sumbawa Besar, NTB</p>
-        <p>Email: info@smkn2sumbawa.sch.id | Telp: (0371) 12345</p>
+        <img src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('images/logo.jpg'))) }}" class="logo" alt="Logo">
+        <div class="text">
+            <h1>PEMERINTAH PROVINSI NUSA TENGGARA BARAT</h1>
+            <h2>DINAS PENDIDIKAN DAN KEBUDAYAAN</h2>
+            <h3>SMK NEGERI 2 SUMBAWA BESAR</h3>
+            <p>Jl. Lingkar Selatan Km. 04 Sumbawa Besar, Telp./Fax.: (0371) 2628048 / 2628047</p>
+            <p>Situs Resmi: http://www.smkn2sumbawabesar.sch.id</p>
+            <p>Email: smkn2_sumbawabesar@yahoo.co.id</p>
+        </div>
     </div>
     <div class="garis"></div>
 
@@ -42,7 +50,7 @@
 
         <p>Dengan ini kami sampaikan bahwa berdasarkan data pelanggaran yang tercatat, Saudara telah mencapai total poin pelanggaran sebesar <strong>{{ $totalPoin }} poin</strong>.</p>
 
-        <p>Schubungan dengan hal tersebut, kami memberikan <strong>Surat Teguran {{ $tingkat }}</strong> sebagai bentuk peringatan resmi dari pihak sekolah. Kami mengharapkan Saudara untuk segera memperbaiki sikap dan perilaku agar tidak terjadi pelanggaran lebih lanjut.</p>
+        <p>Sehubungan dengan hal tersebut, kami memberikan <strong>Surat Teguran {{ $tingkat }}</strong> sebagai bentuk peringatan resmi dari pihak sekolah. Kami mengharapkan Saudara untuk segera memperbaiki sikap dan perilaku agar tidak terjadi pelanggaran lebih lanjut.</p>
 
         <p>Apabila Saudara kembali melakukan pelanggaran dan mencapai batas poin yang lebih tinggi, maka pihak sekolah akan memberikan sanksi yang lebih tegas sesuai dengan peraturan yang berlaku.</p>
 
